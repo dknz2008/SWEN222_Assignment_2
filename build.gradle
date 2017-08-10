@@ -1,0 +1,36 @@
+plugins {
+    id 'com.github.johnrengelman.shadow' version '1.2.4'
+}
+apply plugin: 'application'
+apply plugin: 'java'
+
+group 'net.tangentmc'
+version '1.0-SNAPSHOT'
+
+mainClassName = 'game.TextGame'
+
+sourceCompatibility = 1.8
+shadowJar {
+    baseName = 'SwordAndShield'
+    classifier = null
+    version = null
+    destinationDir = new File(".")
+}
+repositories {
+    mavenCentral()
+
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile group: 'org.fusesource.jansi', name: 'jansi', version: '1.16'
+    compile group: 'net.java.dev.jna', name: 'jna-platform', version: '4.4.0'
+
+    compile group: 'org.jline', name: 'jline', version: '3.3.1'
+    compileOnly 'org.projectlombok:lombok:1.16.18'
+    compile group: 'org.apache.commons', name: 'commons-collections4', version: '4.1'
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.6'
+    compile 'net.sf.jopt-simple:jopt-simple:4.9'
+}
+
+assemble.dependsOn shadowJar
