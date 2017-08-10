@@ -242,7 +242,7 @@ public class Game {
 
 
     }
-    private void parseTurn(Player player, Scanner reader){
+    public void parseTurn(Player player, Scanner reader){
 
         System.out.println(player.getColor() + "'s Turn");
 
@@ -285,7 +285,7 @@ public class Game {
 
         if(creationInput.length != 3){
             parseCreatePiece(s, player);
-        } else if(!(input.matches("create [a-z|A-Z] (0|90|180|270)"))){
+        } else if(!(input.matches("create [A-z] (0|90|180|270)"))){
             System.out.println("invalid input");
             parseCreatePiece(s, player);
         } else if(!(player.getBarracks().contains(player.findPiece((creationInput[1]))))){
@@ -311,7 +311,7 @@ public class Game {
         String input = s.nextLine();
         if(input.equalsIgnoreCase("pass")){
             currentTurn = getOpponent(currentTurn);
-        } else if(!(input.matches("[a-z|A-Z]"))){
+        } else if(!(input.matches("[A-z]"))){
             parseStageTwo(s, player, movedPieces);
         } else if(player.pieceCurrentlyPlayed(input) == null){
             System.out.println("null");

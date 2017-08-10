@@ -3,6 +3,8 @@ import org.junit.Test;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Scanner;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -13,35 +15,28 @@ import static org.junit.Assert.assertTrue;
 public class InputTests {
 
     private Game game;
-    private TestHandler handler;
     private void init() {
         game = new Game();
         game.gameLoop();
     }
 
 
-    public void runCommand(String s){
-        ByteArrayInputStream in = new ByteArrayInputStream(s.getBytes());
-        System.setIn(in);
-    }
 
-    public void assertPieceAt(int x, int y, Character c, Color color){
-        assertTrue();
+    public void assertPieceAt(int x, int y, String name, Color color){
+        assertTrue(game.yellowPlayer.findPiece(name) != null);
+        assertTrue(game.yellowPlayer.findPiece(name).getX() == x);
+        assertTrue(game.yellowPlayer.findPiece(name).getY() == y);
     }
 
     @Test
     public void testExampleOne() throws InterruptedException {
         init();
         ByteArrayInputStream in = new ByteArrayInputStream("y".getBytes());
-        System.setIn(in);
 
-        runCommand("y");
-        runCommand("create e 0");
-        runCommand("create E 0");
-        runCommand("move E down");
-        runCommand("pass");
+//        game.parseTurn(game.yellowPlayer, new Scanner("y\ncreate e 0\ne\nmove down\npass\n"));
+        game.parseTurn(game.yellowPlayer, new Scanner("y\ncreate e 0\npass\n"));
 
-        assertPieceAt(2,2,'E', YELLOW);
+        assertPieceAt(2,2,"E", Color.YELLOW);
 
 //        runCommand("create A 90");
 //        runCommand("move A right");
