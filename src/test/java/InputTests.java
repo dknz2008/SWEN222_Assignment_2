@@ -36,39 +36,12 @@ public class InputTests {
     @Test
     public void testExampleOne() throws InterruptedException {
         init();
-//        ByteArrayInputStream in = new ByteArrayInputStream("y".getBytes());
 
-//        game.parseTurn(game.yellowPlayer, new Scanner("y\ncreate e 0\ne\nmove down\npass\n"));
         game.parseCreatePiece(new Scanner("create e 0\n"), game.yellowPlayer);
         game.parseStageTwo(new Scanner("pass\n"), game.yellowPlayer, new ArrayList<>() );
-//        game.parseTurn(game.yellowPlayer, new Scanner("y\ncreate e 0\npass\n"));
 
         assertYellowPieceAt(2,2,"E", Color.YELLOW);
 
-//        runCommand("create A 90");
-//        runCommand("move A right");
-//        runCommand("pass");
-//
-//        runCommand("create W 180");
-//        runCommand("move W down");
-//        runCommand("pass");
-//
-//        runCommand("create F 0");
-//        runCommand("move F right");
-//        runCommand("move A down");
-//        runCommand("pass");
-//
-//        runCommand("create C 0");
-//        runCommand("move E up");
-//        runCommand("move W down");
-//        runCommand("move C up");
-
-//        assertPieceAt(3,2,'F', GREEN);
-//        assertPieceAt(5,3,'A', GREEN);
-//
-//        assertPieceAt(7,5,'C', YELLOW);
-//        assertPieceAt(7,8,'W', YELLOW);
-//        assertPieceAt(7,9,'E', YELLOW);
     }
 
 
@@ -90,30 +63,34 @@ public class InputTests {
         assertGreenPieceAt(7,8,"w", Color.GREEN);
 
         game.parseCreatePiece(new Scanner("create f 0\n"), game.yellowPlayer);
-        game.drawGrid(game.board.getGrid());
         game.parseStageTwo(new Scanner("f\nmove right\n"), game.yellowPlayer, new ArrayList<>() );
-        game.drawGrid(game.board.getGrid());
         game.parseStageTwo(new Scanner("a\nmove down\n"), game.yellowPlayer, new ArrayList<>() );
-        game.drawGrid(game.board.getGrid());
         game.parseStageTwo(new Scanner("pass\n"), game.yellowPlayer, new ArrayList<>());
 
-        game.drawGrid(game.board.getGrid());
         assertYellowPieceAt(5,3,"a", Color.YELLOW);
         assertYellowPieceAt(3,2,"f", Color.YELLOW);
 
-//        runCommand("create F 0");
-//        runCommand("move F right");
-//        runCommand("move A down");
-//        runCommand("pass");
-//
+        game.drawGrid(game.board.getGrid());
+
+        game.parseCreatePiece(new Scanner("create C 0\n"), game.greenPlayer);
+        game.parseStageTwo(new Scanner("e\nmove up\n"), game.greenPlayer, new ArrayList<>() );
+        game.parseStageTwo(new Scanner("w\nmove down\n"), game.greenPlayer, new ArrayList<>() );
+        game.parseStageTwo(new Scanner("c\nmove up\n"), game.greenPlayer, new ArrayList<>() );
+        game.parseStageTwo(new Scanner("pass\n"), game.greenPlayer, new ArrayList<>());
+
+        game.drawGrid(game.board.getGrid());
+
+         assertYellowPieceAt(7,5,'C', YELLOW);
+  assertPieceAt(7,8,'W', YELLOW);
+        assertPieceAt(7,9,'E', YELLOW);
+
+
 //        runCommand("create C 0");
 //        runCommand("move E up");
 //        runCommand("move W down");
 //        runCommand("move C up");
 
-//        assertPieceAt(3,2,'F', GREEN);
-//        assertPieceAt(5,3,'A', GREEN);
-//
+
 //        assertPieceAt(7,5,'C', YELLOW);
 //        assertPieceAt(7,8,'W', YELLOW);
 //        assertPieceAt(7,9,'E', YELLOW);

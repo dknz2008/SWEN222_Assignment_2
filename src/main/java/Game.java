@@ -7,6 +7,11 @@ import java.util.*;
  */
 public class Game {
 
+
+    public enum parseReturnState{
+        SUCCESS, FAIL, UNDO;
+    }
+
     List<Player> playerList;
     Player currentTurn;
     Board board;
@@ -253,18 +258,16 @@ public class Game {
     public void parseTurn(Player player, Scanner reader){
 
         System.out.println(player.getColor() + "'s Turn");
-        stage = "createstage";
         if(player.isCreationTileFree(board)){
-            if(parseAskForCreatePiece(reader)){
+            if(parseAskForCreatePiece(reader) == parseReturnState.SUCCESS){
                 drawBarracks(board.getGrid(), currentTurn);
-                boolean check = parseCreatePiece(reader, player);
-                while(!check){
+                parseReturnState check = parseCreatePiece(reader, player);
+                while(check == parseReturnState.FAIL){
                     check = parseCreatePiece(reader, player);
                 }
             }
         }
 
-        stage = "secondstage";
         this.movedPieces = new ArrayList<>();
         while(currentTurn == player){
             drawGrid(board.getGrid());
@@ -272,7 +275,7 @@ public class Game {
         }
     }
 
-    private boolean parseAskForCreatePiece(Scanner s) {
+    private parseReturnState parseAskForCreatePiece(Scanner s) {
         System.out.println("Do you want to create a piece (y/n)");
 
         String input = s.nextLine();
@@ -284,16 +287,17 @@ public class Game {
 
         if(input.equalsIgnoreCase("undo")){
             Undo();
+            return parseReturnState.UNDO;
         }
 
         if (input.equalsIgnoreCase("y")) {
-            return true;
+            return parseReturnState.SUCCESS;
         } else {
-            return false;
+            return parseReturnState.FAIL;
         }
     }
 
-    public boolean parseCreatePiece(Scanner s, Player player){
+    public parseReturnState parseCreatePiece(Scanner s, Player player){
         System.out.println("type: 'create <letter> <0/90/180/270>' to create a piece");
 
         String input = s.nextLine();
@@ -301,20 +305,20 @@ public class Game {
 
         if(input.equalsIgnoreCase("undo")){
             Undo();
-            return false;
+            return parseReturnState.UNDO;
         }
 
         if(creationInput.length != 3 || !(input.matches("create [A-z] (0|90|180|270)"))){
-            return false;
+            return parseReturnState.FAIL;
         }
 
         if(player.getBarracks().contains(player.findPiece((creationInput[1])))){
             Piece piece = player.makePiece((creationInput[1]), Integer.parseInt(creationInput[2]));
             player.createPieceOnBoard(board, piece);
             parseReactions(s, piece);
-            return true;
+            return parseReturnState.SUCCESS;
         }
-        return false;
+        return parseReturnState.FAIL;
     }
 
 
@@ -323,75 +327,75 @@ public class Game {
      * @param s
      * @param player
      */
-    public boolean parseStageTwo(Scanner s, Player player, List<Piece> movedPieces){
+    public parseReturnState parseStageTwo(Scanner s, Player player, List<Piece> movedPieces){
         System.out.println("Either 'pass' or type input name of piece you would like to develop: '<letter>'");
 
         String input = s.nextLine();
 
         if(input.equalsIgnoreCase("pass")){
             currentTurn = getOpponent(currentTurn);
-            return true;
+            return parseReturnState.FAIL;
         }
 
         else if(!(input.matches("[A-z]"))){
-            return false;
+            return parseReturnState.FAIL;
         } else if(player.pieceCurrentlyPlayed(input) == null){
-            return false;
+            return parseReturnState.FAIL;
         }else if(!player.getInPlay().contains(player.pieceCurrentlyPlayed(input))){
             System.out.println("This piece is not on the board");
-            return false;
+            return parseReturnState.FAIL;
         }else {
             return parsePieceDevelopment(s, player.pieceCurrentlyPlayed(input), player, movedPieces);
         }
 
     }
 
-    private boolean parsePieceDevelopment(Scanner s, Piece piece, Player player, List<Piece> movedPieces){
+    private parseReturnState parsePieceDevelopment(Scanner s, Piece piece, Player player, List<Piece> movedPieces){
         System.out.println("Either choose to 'move <up|down|left|right>' the piece or 'rotate <0|90|180|270>'");
 
         String input = s.nextLine();
         String[] creationInput = input.split(" ");
 
         if(creationInput.length != 2){
-            return false;
+            return parseReturnState.FAIL;
         } else if(creationInput[0].equals("move")){
             return parseMove(s, player, piece, creationInput[1], movedPieces);
         }else if(creationInput[0].equals("rotate")){
             return parseRotation(s, player, piece, creationInput[1], movedPieces);
         } else{
-            return false;
+            return parseReturnState.FAIL;
         }
 
     }
 
-    private boolean parseMove(Scanner s, Player player, Piece piece, String direction, List<Piece> movedPieces){
+    private parseReturnState parseMove(Scanner s, Player player, Piece piece, String direction, List<Piece> movedPieces){
         if(!(direction.matches("up|down|left|right"))){
-            return false;
+            return parseReturnState.FAIL;
         } else {
             if(!movedPieces.contains(piece)){
                 piece.move(direction, board);
                 movedPieces.add(piece);
                 parseReactions(s, piece);
-                return true;
+                return parseReturnState.SUCCESS;
             }else{
                 System.out.println("Piece selected has already been moved before");
-                return false;
+                return parseReturnState.FAIL;
             }
         }
     }
 
-    private boolean parseRotation(Scanner s, Player player, Piece piece, String rotation, List<Piece> movedPieces){
+    private parseReturnState parseRotation(Scanner s, Player player, Piece piece, String rotation, List<Piece> movedPieces){
         if(!(rotation.matches("0|90|180|270"))){
-            return false;
+            return parseReturnState.FAIL;
         } else {
             if(!movedPieces.contains(piece)){
                 piece.rotate(Integer.valueOf(rotation));
                 movedPieces.add(piece);
                 parseReactions(s, piece);
-                return true;
+                return parseReturnState.SUCCESS;
             }else{
                 System.out.println("Piece selected has already been moved before");
-                return false;
+                return parseReturnState.FAIL;
             }
         }
     }
