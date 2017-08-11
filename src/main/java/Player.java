@@ -28,7 +28,6 @@ public class Player {
      */
 
     public Piece pieceCurrentlyPlayed(String name){
-        System.out.println(inPlay.size());
         for(Piece p: inPlay){
             if(p.getName().equalsIgnoreCase(name)){
                 return p;
@@ -91,7 +90,6 @@ public class Player {
         p.setY(creationTileY);
         barracks.remove(p);
         inPlay.add(p);
-        System.out.println(inPlay.size());
         return true;
     }
 

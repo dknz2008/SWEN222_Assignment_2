@@ -10,6 +10,9 @@ public class SwordNothingRule implements Rule {
 
     @Override
     public List<Reaction> collide(Piece current, Piece reactive, Piece.Type currentType, Piece.Type reactiveType, Orientation pointOfContact) {
+
+        //CHECK INSERTIONS ARE CORRECT
+
         if (currentType == Piece.Type.SWORD && reactiveType == Piece.Type.NOTHING) {
             return Arrays.asList(new Reaction(current, reactive, currentType, reactiveType, pointOfContact, Reaction.Rules.SWORDNOTHING));
         }

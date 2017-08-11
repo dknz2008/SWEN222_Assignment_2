@@ -56,6 +56,7 @@ public class Reaction {
     }
 
     public void executeReaction(Board board){
+        System.out.println(currentType);
         if(rule == Rules.SWORDNOTHING){
             reactive.getPlayer().sendToCemetery(reactive);
         }else if(rule == Rules.SWORDSWORD){
@@ -68,11 +69,12 @@ public class Reaction {
             }else if(pointOfContact == Orientation.BOTTOM){
                 reactive.move("down", board);
             } else if(pointOfContact == Orientation.LEFT){
-                reactive.move("left", board);
-            } else if(pointOfContact == Orientation.RIGHT){
                 reactive.move("right", board);
+            } else if(pointOfContact == Orientation.RIGHT){
+                reactive.move("left", board);
             }
-
+        }else{
+            System.out.println("NO REACTION -- THIS SHOULD NOT HAPPEN ");
         }
     }
 

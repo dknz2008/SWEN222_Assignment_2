@@ -1,3 +1,5 @@
+import com.rits.cloning.Cloner;
+
 import java.util.*;
 
 /**
@@ -12,7 +14,14 @@ public class Game {
     Player greenPlayer;
     Player winPlayer = null;
 
+    String stage = "createstage";
+
+    private Stack<SavedGameState> savedGameStates;
+    List<Piece> movedPieces;
+
     public Game() {
+        savedGameStates = new Stack<>();
+        movedPieces = new ArrayList<>();
         playerList = new ArrayList<>();
         this.board = new Board();
 
@@ -239,13 +248,12 @@ public class Game {
         while(!hasWon(currentTurn)){
             parseTurn(currentTurn, reader);
         }
-
-
     }
+
     public void parseTurn(Player player, Scanner reader){
 
         System.out.println(player.getColor() + "'s Turn");
-
+        stage = "createstage";
         if(player.isCreationTileFree(board)){
             if(parseAskForCreatePiece(reader)){
                 drawBarracks(board.getGrid(), currentTurn);
@@ -256,21 +264,26 @@ public class Game {
             }
         }
 
-        List<Piece> movedPieces = new ArrayList<>();
+        stage = "secondstage";
+        this.movedPieces = new ArrayList<>();
         while(currentTurn == player){
             drawGrid(board.getGrid());
             parseStageTwo(reader, player, movedPieces);
         }
-
     }
 
     private boolean parseAskForCreatePiece(Scanner s) {
         System.out.println("Do you want to create a piece (y/n)");
 
         String input = s.nextLine();
-        while (!input.matches("y|Y|n|N")) {
+
+        while (!input.matches("y|Y|n|N|undo")) {
             System.out.println("Do you want to create a piece (y/n)");
             input = s.nextLine();
+        }
+
+        if(input.equalsIgnoreCase("undo")){
+            Undo();
         }
 
         if (input.equalsIgnoreCase("y")) {
@@ -286,6 +299,11 @@ public class Game {
         String input = s.nextLine();
         String[] creationInput = input.split(" ");
 
+        if(input.equalsIgnoreCase("undo")){
+            Undo();
+            return false;
+        }
+
         if(creationInput.length != 3 || !(input.matches("create [A-z] (0|90|180|270)"))){
             return false;
         }
@@ -293,6 +311,7 @@ public class Game {
         if(player.getBarracks().contains(player.findPiece((creationInput[1])))){
             Piece piece = player.makePiece((creationInput[1]), Integer.parseInt(creationInput[2]));
             player.createPieceOnBoard(board, piece);
+            parseReactions(s, piece);
             return true;
         }
         return false;
@@ -383,7 +402,8 @@ public class Game {
         ReactionManager reactionManager = new ReactionManager();
         List<Reaction> reactions = reactionManager.workOutReactions(piece.getX(), piece.getY(), board);
         if(reactions.size() == 1){
-            reactionManager.printReactionInformation(reactions.get(0));
+            System.out.println("auto executing 1 reaction");
+            System.out.println(reactionManager.printReactionInformation(reactions.get(0)));
             reactions.get(0).executeReaction(board);
         }else if(reactions.size() > 1){
             int i = 0;
@@ -426,5 +446,27 @@ public class Game {
     }
 
 
+    public void Clone(){
+        Cloner cloner = new Cloner();
+        Board boardclone = cloner.deepClone(board);
+        Player yellowPlayerClone = cloner.deepClone(yellowPlayer);
+        Player greenPlayerClone = cloner.deepClone(greenPlayer);
+        List<Piece> movedPiecesClone = cloner.deepClone(movedPieces);
+
+        savedGameStates.push(new SavedGameState(boardclone, yellowPlayerClone, greenPlayerClone, movedPiecesClone));
+    }
+
+    public void Undo(){
+        if(savedGameStates.size() >= 1){
+            SavedGameState savedGame = savedGameStates.pop();
+            savedGame.UndoGame(board, greenPlayer, yellowPlayer, movedPieces);
+
+            System.out.println("Undid move");
+            drawGrid(board.getGrid());
+        }else{
+            System.out.println("There is nothing to undo currently");
+        }
+
+    }
 
 }

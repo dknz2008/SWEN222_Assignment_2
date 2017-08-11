@@ -17,15 +17,20 @@ public class InputTests {
     private Game game;
     private void init() {
         game = new Game();
-        game.gameLoop();
     }
 
 
 
-    public void assertPieceAt(int x, int y, String name, Color color){
-        assertTrue(game.yellowPlayer.findPiece(name) != null);
-        assertTrue(game.yellowPlayer.findPiece(name).getX() == x);
-        assertTrue(game.yellowPlayer.findPiece(name).getY() == y);
+    public void assertGreenPieceAt(int x, int y, String name, Color color){
+        assertTrue(game.greenPlayer.pieceCurrentlyPlayed(name) != null);
+        assertTrue(game.greenPlayer.pieceCurrentlyPlayed(name).getX() == x);
+        assertTrue(game.greenPlayer.pieceCurrentlyPlayed(name).getY() == y);
+    }
+
+    public void assertYellowPieceAt(int x, int y, String name, Color color){
+        assertTrue(game.yellowPlayer.pieceCurrentlyPlayed(name) != null);
+        assertTrue(game.yellowPlayer.pieceCurrentlyPlayed(name).getX() == x);
+        assertTrue(game.yellowPlayer.pieceCurrentlyPlayed(name).getY() == y);
     }
 
     @Test
@@ -34,11 +39,11 @@ public class InputTests {
 //        ByteArrayInputStream in = new ByteArrayInputStream("y".getBytes());
 
 //        game.parseTurn(game.yellowPlayer, new Scanner("y\ncreate e 0\ne\nmove down\npass\n"));
-        game.parseCreatePiece(new Scanner("create a 0"), game.yellowPlayer);
-        game.parseStageTwo(new Scanner("pass"), game.yellowPlayer, new ArrayList<>() );
+        game.parseCreatePiece(new Scanner("create e 0\n"), game.yellowPlayer);
+        game.parseStageTwo(new Scanner("pass\n"), game.yellowPlayer, new ArrayList<>() );
 //        game.parseTurn(game.yellowPlayer, new Scanner("y\ncreate e 0\npass\n"));
 
-        assertPieceAt(2,2,"E", Color.YELLOW);
+        assertYellowPieceAt(2,2,"E", Color.YELLOW);
 
 //        runCommand("create A 90");
 //        runCommand("move A right");
@@ -48,6 +53,54 @@ public class InputTests {
 //        runCommand("move W down");
 //        runCommand("pass");
 //
+//        runCommand("create F 0");
+//        runCommand("move F right");
+//        runCommand("move A down");
+//        runCommand("pass");
+//
+//        runCommand("create C 0");
+//        runCommand("move E up");
+//        runCommand("move W down");
+//        runCommand("move C up");
+
+//        assertPieceAt(3,2,'F', GREEN);
+//        assertPieceAt(5,3,'A', GREEN);
+//
+//        assertPieceAt(7,5,'C', YELLOW);
+//        assertPieceAt(7,8,'W', YELLOW);
+//        assertPieceAt(7,9,'E', YELLOW);
+    }
+
+
+    @Test
+    public void testExampleTwo() throws InterruptedException {
+        init();
+
+        game.parseCreatePiece(new Scanner("create a 90\n"), game.yellowPlayer);
+        game.parseStageTwo(new Scanner("a\nmove right\n"), game.yellowPlayer, new ArrayList<>() );
+        game.parseStageTwo(new Scanner("pass\n"), game.yellowPlayer, new ArrayList<>());
+
+        assertYellowPieceAt(3,2,"a", Color.YELLOW);
+
+
+        game.parseCreatePiece(new Scanner("create w 180\n"), game.greenPlayer);
+        game.parseStageTwo(new Scanner("w\nmove down\n"), game.greenPlayer, new ArrayList<>() );
+        game.parseStageTwo(new Scanner("pass\n"), game.greenPlayer, new ArrayList<>());
+
+        assertGreenPieceAt(7,8,"w", Color.GREEN);
+
+        game.parseCreatePiece(new Scanner("create f 0\n"), game.yellowPlayer);
+        game.drawGrid(game.board.getGrid());
+        game.parseStageTwo(new Scanner("f\nmove right\n"), game.yellowPlayer, new ArrayList<>() );
+        game.drawGrid(game.board.getGrid());
+        game.parseStageTwo(new Scanner("a\nmove down\n"), game.yellowPlayer, new ArrayList<>() );
+        game.drawGrid(game.board.getGrid());
+        game.parseStageTwo(new Scanner("pass\n"), game.yellowPlayer, new ArrayList<>());
+
+        game.drawGrid(game.board.getGrid());
+        assertYellowPieceAt(5,3,"a", Color.YELLOW);
+        assertYellowPieceAt(3,2,"f", Color.YELLOW);
+
 //        runCommand("create F 0");
 //        runCommand("move F right");
 //        runCommand("move A down");
