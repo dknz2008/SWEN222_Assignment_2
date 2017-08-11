@@ -249,7 +249,10 @@ public class Game {
         if(player.isCreationTileFree(board)){
             if(parseAskForCreatePiece(reader)){
                 drawBarracks(board.getGrid(), currentTurn);
-                parseCreatePiece(reader, player);
+                boolean check = parseCreatePiece(reader, player);
+                while(!check){
+                    check = parseCreatePiece(reader, player);
+                }
             }
         }
 
@@ -277,22 +280,22 @@ public class Game {
         }
     }
 
-    private void parseCreatePiece(Scanner s, Player player){
+    private boolean parseCreatePiece(Scanner s, Player player){
         System.out.println("type: 'create <letter> <0/90/180/270>' to create a piece");
 
         String input = s.nextLine();
         String[] creationInput = input.split(" ");
 
-        while(creationInput.length != 3 || !(input.matches("create [A-z] (0|90|180|270)"))){
-            System.out.println("type: 'create <letter> <0/90/180/270>' to create a piece");
-            input = s.nextLine();
-            creationInput = input.split(" ");
+        if(creationInput.length != 3 || !(input.matches("create [A-z] (0|90|180|270)"))){
+            return false;
         }
 
         if(player.getBarracks().contains(player.findPiece((creationInput[1])))){
             Piece piece = player.makePiece((creationInput[1]), Integer.parseInt(creationInput[2]));
             player.createPieceOnBoard(board, piece);
+            return true;
         }
+        return false;
     }
 
 
@@ -350,12 +353,12 @@ public class Game {
                 piece.move(direction, board);
                 movedPieces.add(piece);
                 parseReactions(s, piece);
+                return true;
             }else{
                 System.out.println("Piece selected has already been moved before");
                 return false;
             }
         }
-        return false;
     }
 
     private boolean parseRotation(Scanner s, Player player, Piece piece, String rotation, List<Piece> movedPieces){
@@ -366,12 +369,12 @@ public class Game {
                 piece.rotate(Integer.valueOf(rotation));
                 movedPieces.add(piece);
                 parseReactions(s, piece);
+                return true;
             }else{
                 System.out.println("Piece selected has already been moved before");
                 return false;
             }
         }
-        return false;
     }
 
     public void parseReactions(Scanner s, Piece piece){
@@ -387,7 +390,6 @@ public class Game {
             for(Reaction reaction: reactions){
                 System.out.println(i + ": " + reactionManager.printReactionInformation(reaction));
             }
-
             parseReactionInput(s, reactions.size());
         }
     }
