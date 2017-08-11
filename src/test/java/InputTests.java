@@ -31,10 +31,12 @@ public class InputTests {
     @Test
     public void testExampleOne() throws InterruptedException {
         init();
-        ByteArrayInputStream in = new ByteArrayInputStream("y".getBytes());
+//        ByteArrayInputStream in = new ByteArrayInputStream("y".getBytes());
 
 //        game.parseTurn(game.yellowPlayer, new Scanner("y\ncreate e 0\ne\nmove down\npass\n"));
-        game.parseTurn(game.yellowPlayer, new Scanner("y\ncreate e 0\npass\n"));
+        game.parseCreatePiece(new Scanner("create a 0"), game.yellowPlayer);
+        game.parseStageTwo(new Scanner("pass"), game.yellowPlayer, new ArrayList<>() );
+//        game.parseTurn(game.yellowPlayer, new Scanner("y\ncreate e 0\npass\n"));
 
         assertPieceAt(2,2,"E", Color.YELLOW);
 

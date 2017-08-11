@@ -280,7 +280,7 @@ public class Game {
         }
     }
 
-    private boolean parseCreatePiece(Scanner s, Player player){
+    public boolean parseCreatePiece(Scanner s, Player player){
         System.out.println("type: 'create <letter> <0/90/180/270>' to create a piece");
 
         String input = s.nextLine();
@@ -304,7 +304,7 @@ public class Game {
      * @param s
      * @param player
      */
-    private boolean parseStageTwo(Scanner s, Player player, List<Piece> movedPieces){
+    public boolean parseStageTwo(Scanner s, Player player, List<Piece> movedPieces){
         System.out.println("Either 'pass' or type input name of piece you would like to develop: '<letter>'");
 
         String input = s.nextLine();
