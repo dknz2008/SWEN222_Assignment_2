@@ -283,18 +283,14 @@ public class Game {
         String input = s.nextLine();
         String[] creationInput = input.split(" ");
 
-        if(creationInput.length != 3){
-            parseCreatePiece(s, player);
-        } else if(!(input.matches("create [A-z] (0|90|180|270)"))){
-            System.out.println("invalid input");
-            parseCreatePiece(s, player);
-        } else if(!(player.getBarracks().contains(player.findPiece((creationInput[1]))))){
-            System.out.println("player does not have piece");
-            parseCreatePiece(s, player);
-        }else {
-            System.out.println("Piece created");
+        while(creationInput.length != 3 || !(input.matches("create [A-z] (0|90|180|270)"))){
+            System.out.println("type: 'create <letter> <0/90/180/270>' to create a piece");
+            input = s.nextLine();
+            creationInput = input.split(" ");
+        }
+
+        if(player.getBarracks().contains(player.findPiece((creationInput[1])))){
             Piece piece = player.makePiece((creationInput[1]), Integer.parseInt(creationInput[2]));
-            if (piece == null) System.out.println("ERROR in Piece creation");
             player.createPieceOnBoard(board, piece);
         }
     }
@@ -305,69 +301,77 @@ public class Game {
      * @param s
      * @param player
      */
-    private void parseStageTwo(Scanner s, Player player, List<Piece> movedPieces){
+    private boolean parseStageTwo(Scanner s, Player player, List<Piece> movedPieces){
         System.out.println("Either 'pass' or type input name of piece you would like to develop: '<letter>'");
 
         String input = s.nextLine();
+
         if(input.equalsIgnoreCase("pass")){
             currentTurn = getOpponent(currentTurn);
-        } else if(!(input.matches("[A-z]"))){
-            parseStageTwo(s, player, movedPieces);
+            return true;
+        }
+
+        else if(!(input.matches("[A-z]"))){
+            return false;
         } else if(player.pieceCurrentlyPlayed(input) == null){
-            System.out.println("null");
-            parseStageTwo(s, player, movedPieces);
+            return false;
         }else if(!player.getInPlay().contains(player.pieceCurrentlyPlayed(input))){
             System.out.println("This piece is not on the board");
-            parseStageTwo(s, player, movedPieces);
-        }else{
-            parsePieceDevelopment(s, player.pieceCurrentlyPlayed(input), player, movedPieces);
+            return false;
+        }else {
+            return parsePieceDevelopment(s, player.pieceCurrentlyPlayed(input), player, movedPieces);
         }
 
     }
 
-    private void parsePieceDevelopment(Scanner s, Piece piece, Player player, List<Piece> movedPieces){
+    private boolean parsePieceDevelopment(Scanner s, Piece piece, Player player, List<Piece> movedPieces){
         System.out.println("Either choose to 'move <up|down|left|right>' the piece or 'rotate <0|90|180|270>'");
 
         String input = s.nextLine();
         String[] creationInput = input.split(" ");
 
         if(creationInput.length != 2){
-            parsePieceDevelopment(s, piece, player, movedPieces);
+            return false;
         } else if(creationInput[0].equals("move")){
-            parseMove(s, player, piece, creationInput[1], movedPieces);
+            return parseMove(s, player, piece, creationInput[1], movedPieces);
         }else if(creationInput[0].equals("rotate")){
-            parseRotation(s, player, piece, creationInput[1], movedPieces);
+            return parseRotation(s, player, piece, creationInput[1], movedPieces);
         } else{
-            parsePieceDevelopment(s, piece, player, movedPieces);
+            return false;
         }
 
     }
 
-    private void parseMove(Scanner s, Player player, Piece piece, String direction, List<Piece> movedPieces){
+    private boolean parseMove(Scanner s, Player player, Piece piece, String direction, List<Piece> movedPieces){
         if(!(direction.matches("up|down|left|right"))){
-            parsePieceDevelopment(s, piece, player, movedPieces);
+            return false;
         } else {
             if(!movedPieces.contains(piece)){
                 piece.move(direction, board);
+                movedPieces.add(piece);
                 parseReactions(s, piece);
             }else{
                 System.out.println("Piece selected has already been moved before");
+                return false;
             }
         }
+        return false;
     }
 
-    private void parseRotation(Scanner s, Player player, Piece piece, String rotation, List<Piece> movedPieces){
+    private boolean parseRotation(Scanner s, Player player, Piece piece, String rotation, List<Piece> movedPieces){
         if(!(rotation.matches("0|90|180|270"))){
-            parsePieceDevelopment(s, piece, player, movedPieces);
+            return false;
         } else {
             if(!movedPieces.contains(piece)){
                 piece.rotate(Integer.valueOf(rotation));
+                movedPieces.add(piece);
                 parseReactions(s, piece);
             }else{
                 System.out.println("Piece selected has already been moved before");
+                return false;
             }
-
         }
+        return false;
     }
 
     public void parseReactions(Scanner s, Piece piece){
