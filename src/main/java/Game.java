@@ -30,8 +30,8 @@ public class Game {
         playerList = new ArrayList<>();
         this.board = new Board();
 
-        yellowPlayer = new Player(3 - 1, 3 - 1, Color.YELLOW);
-        greenPlayer = new Player(8 - 1, 8 - 1, Color.GREEN);
+        greenPlayer = new Player(3 - 1, 3 - 1, Color.GREEN);
+        yellowPlayer = new Player(8 - 1, 8 - 1, Color.YELLOW);
         playerList.add(yellowPlayer);
         playerList.add(greenPlayer);
         greenPlayer.populatePieceList();
@@ -205,7 +205,6 @@ public class Game {
             System.out.print(typeSymbol(yp.getBottom(), Orientation.BOTTOM));
             System.out.println("");
         }
-
     }
 
 
@@ -228,14 +227,15 @@ public class Game {
 
     private boolean hasWon(Player player){
         //TODO fill this in
-        if(player == greenPlayer){
-            for(Piece p: greenPlayer.getInPlay()){
+        //TODO NEEDS TO BE IF PLAYER HAS REACTION WITH FACE NOT ON
+        if(player == yellowPlayer){
+            for(Piece p: yellowPlayer.getInPlay()){
                 if(p.getX() == 1 && p.getY() == 1){
                     return true;
                 }
             }
-        }else if(player == yellowPlayer){
-            for(Piece p: yellowPlayer.getInPlay()){
+        }else if(player == greenPlayer){
+            for(Piece p: greenPlayer.getInPlay()){
                 if(p.getX() == 8 && p.getY() == 8){
                     return true;
                 }

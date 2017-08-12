@@ -34,12 +34,12 @@ public class Board {
         grid[0][0] = emptytile;
         grid[0][1] = emptytile;
         grid[1][0] = emptytile;
-        grid[1][1] = yellowface;
+        grid[1][1] = greenface;
 
         grid[9][9] = emptytile;
         grid[8][9] = emptytile;
         grid[9][8] = emptytile;
-        grid[8][8] = greenface;
+        grid[8][8] = yellowface;
 
     }
     
