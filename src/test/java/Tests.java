@@ -7,35 +7,9 @@ import org.junit.Test;
  */
 public class Tests {
 
-
-
     @Test
     public void testBasicReactions(){
         Game game = new Game();
-    }
-
-
-    /**
-     * Test recursively shifting pieces down the board (in the case where sword meets shield
-     */
-    @Test
-    public void testSwordMeetsShieldReaction1(){
-        Game game = new Game();
-        Piece p1 = game.greenPlayer.makePiece("C", 0); //Shield top and bottom
-        Piece p2 =  game.greenPlayer.makePiece("D", 0); //Sword top, shield bottom
-        Piece p3 =  game.greenPlayer.makePiece("B", 0); //Sword top, sword bottom
-        game.board.addToGrid(4, 1, p1);
-        game.board.addToGrid(4, 3, p2);
-//        game.board.addToGrid(4, 5, p3);
-        game.drawGrid(game.board.getGrid());
-        p1.move("down", game.board);
-        game.drawGrid(game.board.getGrid());
-        assertTrue(game.board.getGrid()[2][4] == p1);
-        assertTrue(game.board.getGrid()[4][4] == p2);
-        game.drawGrid(game.board.getGrid());
-//        System.out.println("x: " + p3.getX() + "y: " + p3.getY());
-//        assertTrue(game.board.getGrid()[4][6] == p3);
-
     }
 
 

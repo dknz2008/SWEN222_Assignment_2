@@ -1,16 +1,13 @@
 import org.junit.Test;
-
-import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Scanner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
- * A conversion of http://ecs.victoria.ac.nz/foswiki/pub/Courses/SWEN222_2017T2/LectureSchedule/AssExamples3.pdf
- * into a Unit Test
+ * conversion's of http://ecs.victoria.ac.nz/foswiki/pub/Courses/SWEN222_2017T2/LectureSchedule/AssExamples3.pdf
+ * into a Unit Tests
  */
 public class InputTests {
 
@@ -19,32 +16,53 @@ public class InputTests {
         game = new Game();
     }
 
+    /**
+     * Asserts green piece is at correct position
+     * @param x x position,
+     * @param y y position,
+     * @param name name that is associated with piece,
+     * @param color the color that the piece belongs to
+     */
     public void assertGreenPieceAt(int x, int y, String name, Color color){
         assertTrue(game.greenPlayer.pieceCurrentlyPlayed(name) != null);
         assertTrue(game.greenPlayer.pieceCurrentlyPlayed(name).getX() == x);
         assertTrue(game.greenPlayer.pieceCurrentlyPlayed(name).getY() == y);
     }
 
+    /**
+     * Asserts green piece is at correct position
+     * @param x x position,
+     * @param y y position,
+     * @param name name that is associated with piece,
+     * @param color the color that the piece belongs to
+     */
     public void assertYellowPieceAt(int x, int y, String name, Color color){
         assertTrue(game.yellowPlayer.pieceCurrentlyPlayed(name) != null);
         assertTrue(game.yellowPlayer.pieceCurrentlyPlayed(name).getX() == x);
         assertTrue(game.yellowPlayer.pieceCurrentlyPlayed(name).getY() == y);
     }
 
+    /**
+     * Tests a simple creation phase
+     *
+     */
     @Test
-    public void testExampleOne() throws InterruptedException {
+    public void testExampleOne(){
         init();
 
         game.parseCreatePiece(new Scanner("create e 0\n"), game.yellowPlayer);
         game.parseStageTwo(new Scanner("pass\n"), game.yellowPlayer, new ArrayList<>() );
-
         assertYellowPieceAt(7,7,"E", Color.YELLOW);
 
     }
 
 
+    /**
+     * tests multiple creation phases as well as reactions between two pieces and
+     * pieces pushing other pieces (test is based on examples file)
+     */
     @Test
-    public void testExampleTwo() throws InterruptedException {
+    public void testExampleTwo(){
         init();
 
         game.parseCreatePiece(new Scanner("create e 0\n"), game.yellowPlayer);
@@ -91,8 +109,13 @@ public class InputTests {
     }
 
 
+    /**
+     * tests multiple reactions, supplying the input for what reaction should be done first,
+     * one at a time
+     *
+     */
     @Test
-    public void testExampleThree() throws InterruptedException {
+    public void testExampleThree() {
         init();
 
         game.yellowPlayer.createPiece(game.board, game.yellowPlayer.makePiece("m", 180), 5, 3);
@@ -109,8 +132,11 @@ public class InputTests {
     }
 
 
+    /**
+     * Tests the win condition when sword is against face
+     */
     @Test
-    public void testExampleFour() throws InterruptedException {
+    public void testExampleFour(){
         init();
 
         game.yellowPlayer.createPiece(game.board, game.yellowPlayer.makePiece("h", 90), 2, 0);
@@ -122,7 +148,7 @@ public class InputTests {
         game.drawGrid(game.board.getGrid());
 
 
-        game.parseCreatePiece(new Scanner("create F 0\n"), game.greenPlayer);
+        game.parseCreatePiece(new Scanner("create f 0\n"), game.greenPlayer);
         game.drawGrid(game.board.getGrid());
         game.parseStageTwo(new Scanner("f\nmove up\n"), game.greenPlayer, new ArrayList<>() );
 
@@ -131,8 +157,30 @@ public class InputTests {
     }
 
 
+    /**
+     * Test shifting multiple pieces down the board (in the case where sword meets shield)
+     */
+    @Test
+    public void testSwordMeetsShieldReaction1(){
+        Game game = new Game();
 
-//    private Player findPlayer(PieceColor color) {
-//        return game.getPlayers().stream().filter(player -> player.getColor()==color).findFirst().get();
-//    }
+        game.greenPlayer.createPiece(game.board, game.greenPlayer.makePiece("c", 0), 4, 1); //Shield top and bottom
+        game.greenPlayer.createPiece(game.board, game.greenPlayer.makePiece("d", 0), 4, 3);   //Sword top, shield bottom
+//        game.greenPlayer.createPiece(game.board, game.greenPlayer.makePiece("b", 0), 4, 5); //Sword top, sword bottom
+
+        game.drawGrid(game.board.getGrid());
+
+        game.currentTurn = game.greenPlayer;
+
+        game.parseStageTwo(new Scanner("c\nmove down\n"), game.greenPlayer, new ArrayList<>() );
+
+        game.drawGrid(game.board.getGrid());
+
+        assertGreenPieceAt(4,2, "c", Color.GREEN);
+//        assertGreenPieceAt(4,4, "d", Color.GREEN);
+
+
+    }
+
+
 }

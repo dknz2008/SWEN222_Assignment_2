@@ -15,8 +15,6 @@ public class ReactionManager {
 
     public List<Reaction> workOutReactions(int x, int y, Board board){
 
-
-
         List<Reaction> reactionList = new ArrayList<>();
 
 
@@ -44,8 +42,9 @@ public class ReactionManager {
                     reactionList.addAll(rule.collide(current, against, current.getRight(), against.getLeft(), Orientation.LEFT));
                 }
             }
-
+            System.out.println("in here");
             if (board.inBounds(x, y + 1)) {
+                System.out.println("in here");
                 if (board.getGrid()[y + 1][x] != null) {
                     Piece against = board.getGrid()[y + 1][x];
                     reactionList.addAll(rule.collide(current, against, current.getBottom(), against.getTop(), Orientation.TOP));

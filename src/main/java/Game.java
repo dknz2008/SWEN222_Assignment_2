@@ -195,21 +195,6 @@ public class Game {
 
     }
 
-    private void drawPiece() {
-        for (Piece yp : board.getYellowPieces()) {
-            System.out.print(" ");
-            System.out.print(typeSymbol(yp.getTop(), Orientation.TOP));
-            System.out.println("");
-            System.out.print(typeSymbol(yp.getLeft(), Orientation.LEFT));
-            System.out.print(yp.getName());
-            System.out.print(typeSymbol(yp.getRight(), Orientation.RIGHT));
-            System.out.println("");
-            System.out.print(" ");
-            System.out.print(typeSymbol(yp.getBottom(), Orientation.BOTTOM));
-            System.out.println("");
-        }
-    }
-
 
     private String typeSymbol(Piece.Type t, Orientation orientation) {
         if (t == Piece.Type.SWORD) {
@@ -243,8 +228,6 @@ public class Game {
 
     public void gameLoop() {
         Scanner reader = new Scanner(System.in);  // Reading from System.in
-
-        drawGrid(board.getGrid());
 
         while(hasWon() == null){
             parseTurnLoop(reader);
@@ -386,7 +369,7 @@ public class Game {
             return parseReturnState.FAIL;
         } else {
             if(!movedPieces.contains(piece)){
-                Clone(false,false);
+                Clone(false, false);
                 piece.move(direction, board);
                 movedPieces.add(piece);
                 parseReactions(s, piece);
@@ -418,7 +401,7 @@ public class Game {
     public void parseReactions(Scanner s, Piece piece){
         //1. work out the reactions and add them to a list
         //iterate over all the reactions
-        if(piece.getPlayer().pieceCurrentlyPlayed(piece.getName()) != null){
+        if((piece.getPlayer().pieceCurrentlyPlayed(piece.getName())) != null){
             ReactionManager reactionManager = new ReactionManager();
             List<Reaction> reactions = reactionManager.workOutReactions(piece.getX(), piece.getY(), board);
             if(reactions.size() == 1){

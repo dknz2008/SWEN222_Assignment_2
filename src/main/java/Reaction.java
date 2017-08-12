@@ -4,7 +4,7 @@
 
 public class Reaction {
 
-    public enum Rules{
+    private enum Rules{
         SWORDNOTHING, SWORDSHIELD, SWORDSWORD;
     }
     private Piece current;
@@ -30,13 +30,6 @@ public class Reaction {
         return reactiveType;
     }
 
-    public Orientation getPointOfContact() {
-        return pointOfContact;
-    }
-
-    public Rules getRule() {
-        return rule;
-    }
 
     /**
      *
@@ -65,10 +58,9 @@ public class Reaction {
             reactive.getPlayer().sendToCemetery(reactive, board);
             current.getPlayer().sendToCemetery(current, board);
         }else if(rule == Rules.SWORDSHIELD){
-
-            if(pointOfContact == Orientation.TOP){
+            if(pointOfContact == Orientation.BOTTOM){
                 reactive.move("up", board);
-            }else if(pointOfContact == Orientation.BOTTOM){
+            }else if(pointOfContact == Orientation.TOP){
                 reactive.move("down", board);
             } else if(pointOfContact == Orientation.LEFT){
                 reactive.move("right", board);
