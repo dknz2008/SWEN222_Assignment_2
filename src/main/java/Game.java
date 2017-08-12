@@ -11,6 +11,9 @@ public class Game {
     public enum parseReturnState{
         SUCCESS, FAIL, UNDO;
     }
+    public enum GameState {
+        CREATION, MOVEMENT, DONE
+    }
 
     List<Player> playerList;
     Player currentTurn;
@@ -225,23 +228,16 @@ public class Game {
         return null;
     }
 
-    private boolean hasWon(Player player){
-        //TODO fill this in
-        //TODO NEEDS TO BE IF PLAYER HAS REACTION WITH FACE NOT ON
-        if(player == yellowPlayer){
-            for(Piece p: yellowPlayer.getInPlay()){
-                if(p.getX() == 1 && p.getY() == 1){
-                    return true;
-                }
-            }
-        }else if(player == greenPlayer){
-            for(Piece p: greenPlayer.getInPlay()){
-                if(p.getX() == 8 && p.getY() == 8){
-                    return true;
-                }
-            }
+
+    public Player hasWon(){
+        if(board.attackingGreenFace(yellowPlayer) || board.attackingGreenFace(greenPlayer)){
+            return yellowPlayer;
         }
-        return false;
+
+        if(board.attackingYellowFace(yellowPlayer) || board.attackingYellowFace(greenPlayer)){
+            return yellowPlayer;
+        }
+        return null;
     }
 
 
@@ -250,28 +246,40 @@ public class Game {
 
         drawGrid(board.getGrid());
 
-        while(!hasWon(currentTurn)){
-            parseTurn(currentTurn, reader);
+        while(hasWon() == null){
+            parseTurnLoop(reader);
         }
+
+        System.out.println(hasWon().getColor() + " Player Wins!!!!");
     }
-
-    public void parseTurn(Player player, Scanner reader){
-
-        System.out.println(player.getColor() + "'s Turn");
-        if(player.isCreationTileFree(board)){
-            if(parseAskForCreatePiece(reader) == parseReturnState.SUCCESS){
-                drawBarracks(board.getGrid(), currentTurn);
-                parseReturnState check = parseCreatePiece(reader, player);
-                while(check == parseReturnState.FAIL){
-                    check = parseCreatePiece(reader, player);
+    private GameState state = GameState.CREATION;
+    public void parseTurnLoop(Scanner reader){
+        System.out.println(currentTurn.getColor() + "'s Turn");
+        state = GameState.CREATION;
+        this.movedPieces = new ArrayList<>();
+        while(state != GameState.DONE){
+            drawGrid(board.getGrid());
+            parseTurn(reader, movedPieces);
+        }
+        currentTurn = getOpponent(currentTurn);
+    }
+    public void parseTurn(Scanner reader, List<Piece> movedPieces) {
+        if (state == GameState.CREATION) {
+            if(currentTurn.isCreationTileFree(board)){
+                if(parseAskForCreatePiece(reader) == parseReturnState.SUCCESS){
+                    drawBarracks(board.getGrid(), currentTurn);
+                    parseReturnState check = parseCreatePiece(reader, currentTurn);
+                    while(check == parseReturnState.FAIL){
+                        check = parseCreatePiece(reader, currentTurn);
+                    }
+                    if (check == parseReturnState.UNDO) return;
                 }
             }
-        }
 
-        this.movedPieces = new ArrayList<>();
-        while(currentTurn == player){
-            drawGrid(board.getGrid());
-            parseStageTwo(reader, player, movedPieces);
+            state = GameState.MOVEMENT;
+        }
+        if (state == GameState.MOVEMENT) {
+            parseStageTwo(reader,currentTurn,movedPieces);
         }
     }
 
@@ -311,11 +319,12 @@ public class Game {
         if(creationInput.length != 3 || !(input.matches("create [A-z] (0|90|180|270)"))){
             return parseReturnState.FAIL;
         }
-
         if(player.getBarracks().contains(player.findPiece((creationInput[1])))){
+            Clone(true,false);
             Piece piece = player.makePiece((creationInput[1]), Integer.parseInt(creationInput[2]));
             player.createPieceOnBoard(board, piece);
             parseReactions(s, piece);
+            drawGrid(board.getGrid());
             return parseReturnState.SUCCESS;
         }
         return parseReturnState.FAIL;
@@ -333,10 +342,14 @@ public class Game {
         String input = s.nextLine();
 
         if(input.equalsIgnoreCase("pass")){
-            currentTurn = getOpponent(currentTurn);
-            return parseReturnState.FAIL;
+            Clone(false,true);
+            state = GameState.DONE;
+            return parseReturnState.SUCCESS;
         }
-
+        if(input.equalsIgnoreCase("undo")){
+            Undo();
+            return parseReturnState.UNDO;
+        }
         else if(!(input.matches("[A-z]"))){
             return parseReturnState.FAIL;
         } else if(player.pieceCurrentlyPlayed(input) == null){
@@ -373,6 +386,7 @@ public class Game {
             return parseReturnState.FAIL;
         } else {
             if(!movedPieces.contains(piece)){
+                Clone(false,false);
                 piece.move(direction, board);
                 movedPieces.add(piece);
                 parseReactions(s, piece);
@@ -389,6 +403,7 @@ public class Game {
             return parseReturnState.FAIL;
         } else {
             if(!movedPieces.contains(piece)){
+                Clone(false,false);
                 piece.rotate(Integer.valueOf(rotation));
                 movedPieces.add(piece);
                 parseReactions(s, piece);
@@ -403,33 +418,53 @@ public class Game {
     public void parseReactions(Scanner s, Piece piece){
         //1. work out the reactions and add them to a list
         //iterate over all the reactions
-        ReactionManager reactionManager = new ReactionManager();
-        List<Reaction> reactions = reactionManager.workOutReactions(piece.getX(), piece.getY(), board);
-        if(reactions.size() == 1){
-            System.out.println("auto executing 1 reaction");
-            System.out.println(reactionManager.printReactionInformation(reactions.get(0)));
-            reactions.get(0).executeReaction(board);
-        }else if(reactions.size() > 1){
-            int i = 0;
-            for(Reaction reaction: reactions){
-                System.out.println(i + ": " + reactionManager.printReactionInformation(reaction));
+        if(piece.getPlayer().pieceCurrentlyPlayed(piece.getName()) != null){
+            ReactionManager reactionManager = new ReactionManager();
+            List<Reaction> reactions = reactionManager.workOutReactions(piece.getX(), piece.getY(), board);
+            if(reactions.size() == 1){
+                System.out.println("auto executing 1 reaction");
+                System.out.println(reactionManager.printReactionInformation(reactions.get(0)));
+                reactions.get(0).executeReaction(board);
+            }else if(reactions.size() > 1){
+                drawGrid(board.getGrid());
+                int i = 0;
+                for(Reaction reaction: reactions){
+                    System.out.println(i + ": " + reactionManager.printReactionInformation(reaction));
+                    i++;
+                }
+
+                parseReturnState check = parseReactionInput(s, reactions.size(), reactionManager, reactions);
+                while(check == parseReturnState.FAIL){
+                    check = parseReactionInput(s, reactions.size(), reactionManager, reactions);
+                }
+                parseReactions(s, piece);
             }
-            parseReactionInput(s, reactions.size());
         }
+
     }
 
-    public String parseReactionInput(Scanner s, int i){
-
+    public parseReturnState parseReactionInput(Scanner s, int i, ReactionManager reactionManager, List<Reaction> reactions){
         System.out.println("What reaction do you want to apply '<number>'");
 
         String input = s.nextLine();
-        String temp = "[0-$0]";
-        System.out.println(temp);
-//        temp = temp.replace("$0",i+"");
-//        if (input.matches(temp)) {
-//
-//        }
-        return null;
+
+        int choice = -1;
+        try {
+            choice = Integer.parseInt(input);
+        } catch (NumberFormatException e) {
+            System.out.println("you didn't supply a numerical input");
+            return parseReturnState.FAIL;
+        }
+        System.out.println(choice);
+        if(choice >= 0 && choice <= i){
+            System.out.println("Executing the reaction:");
+            System.out.println(reactionManager.printReactionInformation(reactions.get(choice)));
+            reactions.get(choice).executeReaction(board);
+//            parseReactions(s, reactions.get(choice).getReactive());
+            drawGrid(board.getGrid());
+            return parseReturnState.SUCCESS;
+        }
+        return parseReturnState.FAIL;
     }
 
     private Player getOpponent(Player p){
@@ -439,34 +474,35 @@ public class Game {
             return yellowPlayer;
         }
     }
+
     public static void main(String[] args) {
         Game g = new Game();
-
         g.gameLoop();
-
-//       g.createPiece();
-//       g.drawPiece();
-
     }
 
-
-    public void Clone(){
+    private void Clone(boolean isCreation, boolean isPass){
         Cloner cloner = new Cloner();
         Board boardclone = cloner.deepClone(board);
         Player yellowPlayerClone = cloner.deepClone(yellowPlayer);
         Player greenPlayerClone = cloner.deepClone(greenPlayer);
         List<Piece> movedPiecesClone = cloner.deepClone(movedPieces);
 
-        savedGameStates.push(new SavedGameState(boardclone, yellowPlayerClone, greenPlayerClone, movedPiecesClone));
+        savedGameStates.push(new SavedGameState(boardclone, yellowPlayerClone, greenPlayerClone, movedPiecesClone, cloner.deepClone(currentTurn),isCreation,isPass));
     }
 
-    public void Undo(){
+    private void Undo(){
         if(savedGameStates.size() >= 1){
             SavedGameState savedGame = savedGameStates.pop();
-            savedGame.UndoGame(board, greenPlayer, yellowPlayer, movedPieces);
+            savedGame.UndoGame(this);
 
             System.out.println("Undid move");
             drawGrid(board.getGrid());
+            if (savedGame.isWasCreation()) {
+                state = GameState.CREATION;
+            }
+            if (savedGame.isWasPass()) {
+                state = GameState.MOVEMENT;
+            }
         }else{
             System.out.println("There is nothing to undo currently");
         }

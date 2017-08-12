@@ -58,10 +58,12 @@ public class Reaction {
     public void executeReaction(Board board){
         System.out.println(currentType);
         if(rule == Rules.SWORDNOTHING){
-            reactive.getPlayer().sendToCemetery(reactive);
+            System.out.println(reactive.getPlayer().getColor());
+            System.out.println(reactive.getName());
+            reactive.getPlayer().sendToCemetery(reactive, board);
         }else if(rule == Rules.SWORDSWORD){
-            reactive.getPlayer().sendToCemetery(reactive);
-            current.getPlayer().sendToCemetery(reactive);
+            reactive.getPlayer().sendToCemetery(reactive, board);
+            current.getPlayer().sendToCemetery(current, board);
         }else if(rule == Rules.SWORDSHIELD){
 
             if(pointOfContact == Orientation.TOP){
@@ -76,6 +78,8 @@ public class Reaction {
         }else{
             System.out.println("NO REACTION -- THIS SHOULD NOT HAPPEN ");
         }
+
+
     }
 
 }

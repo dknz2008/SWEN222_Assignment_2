@@ -72,9 +72,36 @@ public class Board {
 
     public void removeIfOutOfBounds(int x, int y, Piece p, Player player){
         if(!inBounds(x, y)) {
-            player.sendToCemetery(p);
+            player.sendToCemetery(p, this);
             grid[y][x] = null;
         }
+    }
+
+
+    public boolean attackingYellowFace(Player player){
+        for(Piece p: player.getInPlay()){
+            if(p.getX() == 7 && p.getY() == 8){
+                if(p.getRight() == Piece.Type.SWORD) return true;
+            }
+
+            if(p.getX() == 8 && p.getY() == 7){
+                if(p.getBottom() == Piece.Type.SWORD) return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean attackingGreenFace(Player player){
+        for(Piece p: player.getInPlay()){
+            if(p.getX() == 2 && p.getY() == 1){
+                if(p.getLeft() == Piece.Type.SWORD) return true;
+            }
+
+            if(p.getX() == 1 && p.getY() == 2){
+                if(p.getTop() == Piece.Type.SWORD) return true;
+            }
+        }
+        return false;
     }
 
 

@@ -57,9 +57,8 @@ public class ReactionManager {
     }
 
     public String printReactionInformation(Reaction reaction){
-        //TODO not fully printing, this is odd
        return ("Reaction between " + reaction.getCurrent().getName() + " and "
-                + reaction.getReactive().getName() + ": " + reaction.getReactiveType().toString());
+                + reaction.getReactive().getName() + ": " + reaction.getCurrentType().toString() + " vs "  + reaction.getReactiveType().toString());
     }
 
 

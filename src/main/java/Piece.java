@@ -1,6 +1,3 @@
-import com.sun.org.apache.xpath.internal.operations.Or;
-import org.apache.commons.lang3.StringUtils;
-
 /**
  * Created by TML_TEST on 25/07/2017.
  */
@@ -84,12 +81,16 @@ public class Piece {
         if(direction.equalsIgnoreCase("up")){
             if(!board.inBounds(x, y - 1)){
                 board.getGrid()[y][x] = null;
-            }else if(board.getGrid()[this.y -1][this.x] == null){
+            }else if(board.getGrid()[this.y - 1][this.x] == null){
                 //moving piece
                 board.getGrid()[this.y-1][this.x] = this;
                 //setting old position to empty
                 board.getGrid()[this.y][this.x] = null;
                 this.y = this.y - 1;
+            }else{
+                //moving other piece first
+                board.getGrid()[this.y -1][this.x].move("up", board);
+                this.move("up", board);
             }
         }else if(direction.equalsIgnoreCase("down")){
             if(!board.inBounds(x, y + 1)){
@@ -100,7 +101,10 @@ public class Piece {
                 //setting old position to empty
                 board.getGrid()[this.y][this.x] = null;
                 this.y = this.y + 1;
-                System.out.println("applying reactions now");
+            }else{
+                //moving other piece first
+                board.getGrid()[this.y + 1][this.x].move("down", board);
+                this.move("down", board);
             }
 
         }else if(direction.equalsIgnoreCase("left")){
@@ -112,6 +116,10 @@ public class Piece {
                 //setting old position to empty
                 board.getGrid()[this.y][this.x] = null;
                 this.x = this.x - 1;
+            }else{
+                //moving other piece first
+                board.getGrid()[this.y][this.x - 1].move("left", board);
+                this.move("left", board);
             }
 
         }else if(direction.equalsIgnoreCase("right")){
@@ -123,99 +131,13 @@ public class Piece {
                 //setting old position to empty
                 board.getGrid()[this.y][this.x] = null;
                 this.x = this.x + 1;
+            }else{
+                //moving other piece first
+                board.getGrid()[this.y][this.x + 1].move("right", board);
+                this.move("right", board);
             }
         }
     }
-
-//    public void SwordNothingRule(Board board, int x1, int y1, int x2, int y2, Piece p1, Piece p2, Piece.Type t1, Piece.Type t2){
-//        if(t1 == Piece.Type.SWORD && t2 == Piece.Type.NOTHING){
-//            //move piece to graveyard and make position in grid empty
-//            board.getGrid()[x2][y2] = null;
-//            if(p1.getColor() == Color.GREEN){
-//                board.getGreenCemetery().add(p2);
-//            }else if(p1.getColor() == Color.YELLOW){
-//                board.getYellowCemetery().add(p2);
-//            }
-//        }
-//
-//        if(t2 == Piece.Type.SWORD && t1 == Piece.Type.NOTHING){
-//            //move piece to graveyard and make position in grid empty
-//            board.getGrid()[x1][y1] = null;
-//            if(p2.getColor() == Color.GREEN){
-//                board.getGreenCemetery().add(p1); //HMMMMM check this (might need to be p2)
-//            }else if(p2.getColor() == Color.YELLOW){
-//                board.getYellowCemetery().add(p1);
-//            }
-//        }
-//    }
-
-//    public void SwordSwordRule(Board board, int x1, int y1, int x2, int y2, Piece p1, Piece p2, Piece.Type t1, Piece.Type t2){
-//        if(t1 == Piece.Type.SWORD && t2 == Piece.Type.SWORD){
-//            removeFromBoard(board, x1, y1, p1);
-//            removeFromBoard(board, x1, y1, p2);
-//
-//            if(p2.getColor() == Color.GREEN){
-//                board.getGreenCemetery().add(p2);
-//                board.getYellowCemetery().add(p1);
-//            }else if(p2.getColor() == Color.YELLOW){
-//                board.getYellowCemetery().add(p2);
-//                board.getGreenCemetery().add(p1);
-//            }
-//        }
-//    }
-
-//
-//    public void SwordShieldRule(Board board, int x1, int y1, int x2, int y2, Piece p1, Piece p2, Piece.Type t1, Piece.Type t2, Orientation pointOfContact){
-//        if(t1 == Piece.Type.SWORD && t2 == Piece.Type.SHIELD){
-//            //TODO in this case we have to call the reactions again after things have moved!!!
-//            System.out.println("hopefully this doesn't happen");
-////            shiftPieces(board, x1, y1, p1, pointOfContact);
-//        }else if(t2 == Piece.Type.SWORD && t1 == Piece.Type.SHIELD){
-//            System.out.println("shifting pieces now");
-//            shiftPieces(board, x2, y2, p2, pointOfContact);
-//        }
-//    }
-
-
-    /**
-     *
-     * @param board, the board
-     * @param x,
-     * @param  y,
-     * @param pointOfContact, the spot that the second piece makes contact with the first piece (second pieces top, bottom, left or right)
-     */
-
-    public void shiftPieces(Board board, int x, int y, Piece piece, Orientation pointOfContact){
-        if(pointOfContact == Orientation.TOP){
-            System.out.println("In here");
-//            if(board.inBounds(x2+2, y2))
-//            if(board.getGrid()[y2+2][x2] != null){
-//                System.out.println("in the not null check ");
-//                Piece p3 = board.getGrid()[y2+2][x2];
-//                applyReactions(board, );
-//            }
-            //may need an else
-            piece.move("down", board);
-//            applyReactions(board, x, y);
-//            p1.move("down", board, player);
-
-        }else if(pointOfContact == Orientation.BOTTOM){
-            System.out.println("didn't work");
-        } else if(pointOfContact == Orientation.LEFT){
-            System.out.println("didn't work");
-        } else if(pointOfContact == Orientation.RIGHT){
-            System.out.println("didn't work");
-        }
-    }
-
-
-
-    public void removeFromBoard(Board board, int x, int y, Piece piece){
-        board.getGrid()[y][x] = null;
-        piece.x = null;
-        piece.y = null;
-    }
-
 
     public Type getRight() {
         return right;

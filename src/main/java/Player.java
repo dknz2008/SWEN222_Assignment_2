@@ -19,6 +19,7 @@ public class Player {
         this.color = color;
         barracks = new ArrayList<>();
         inPlay = new ArrayList<>();
+        cemetery = new ArrayList<>();
     }
 
 
@@ -40,9 +41,12 @@ public class Player {
         return color;
     }
 
-    public void sendToCemetery(Piece p){
-        barracks.remove(p);
+    public void sendToCemetery(Piece p, Board board){
+        inPlay.remove(p);
         cemetery.add(p);
+        board.getGrid()[p.getY()][p.getX()] = null;
+        p.setX(null);
+        p.setY(null);
     }
 
     public Piece findPiece(String name){
@@ -84,24 +88,16 @@ public class Player {
      * @return
      */
     public boolean createPieceOnBoard(Board board, Piece p){
-        //TODO check this
-        board.getGrid()[creationTileY][creationTileX] = p;
-        p.setX(creationTileX);
-        p.setY(creationTileY);
-        barracks.remove(p);
-        inPlay.add(p);
+        createPiece(board, p, creationTileX, creationTileY);
         return true;
     }
 
-
-
-    public void pass(){
-
-    }
-
-    public boolean undo(){
-        //cannot undo if no moves have been made, hence boolean?
-        return false;
+    public void createPiece(Board board, Piece p, int x, int y){
+        board.getGrid()[y][x] = p;
+        p.setX(x);
+        p.setY(y);
+        barracks.remove(p);
+        inPlay.add(p);
     }
 
     public List<Piece> getInPlay() {
