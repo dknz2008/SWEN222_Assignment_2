@@ -1,3 +1,5 @@
+import java.util.List;
+
 /**
  * Created by TML_TEST on 25/07/2017.
  */
@@ -35,6 +37,11 @@ public class Piece {
         return player;
     }
 
+    /**
+     * Rotates piece by rotation angle clockwise
+     * @param rotation the angle of rotation
+     * @return Piece the piece that was rotated
+     */
     public Piece rotate(int rotation){
         int r = rotation/90;
 
@@ -48,8 +55,12 @@ public class Piece {
     }
 
 
-
-    public boolean rotatePiece(Piece.Rotation rot) {
+    /**
+     * Rotates piece either clockwise or anti-clockwise
+     * @param rot the direction or rotation (CLOCKWISE or ANTICLOCKWISE)
+     *
+     */
+    public void rotatePiece(Piece.Rotation rot) {
         Piece.Type l = this.getLeft();
         Piece.Type r = this.getRight();
         Piece.Type t = this.getTop();
@@ -66,21 +77,19 @@ public class Piece {
             this.setLeft(t);
             this.setTop(r);
         }
-
-        return true;
     }
 
     /**
-     * Moves piece to new position and sets old position to empty tile
-     * @param direction
-     * @param board
+     * Moves piece to new position and sets old position to empty tile.
+     * Makes sure piece is sent to cemetery if piece goes out of bounds.
+     * @param direction direction that you want to move
+     * @param board the board object
      */
 
-    //TODO make it so it works with reactions and shifting other pieces too
     public void move(String direction, Board board){
         if(direction.equalsIgnoreCase("up")){
             if(!board.inBounds(x, y - 1)){
-                board.getGrid()[y][x] = null;
+                player.sendToCemetery(this, board);
             }else if(board.getGrid()[this.y - 1][this.x] == null){
                 //moving piece
                 board.getGrid()[this.y-1][this.x] = this;
@@ -94,7 +103,7 @@ public class Piece {
             }
         }else if(direction.equalsIgnoreCase("down")){
             if(!board.inBounds(x, y + 1)){
-                board.getGrid()[y][x] = null;
+                player.sendToCemetery(this, board);
             }else if(board.getGrid()[this.y+1][this.x] == null){
                 //moving piece
                 board.getGrid()[this.y+1][this.x] = this;
@@ -109,7 +118,7 @@ public class Piece {
 
         }else if(direction.equalsIgnoreCase("left")){
             if(!board.inBounds(x-1, y)){
-                board.getGrid()[y][x] = null;
+                player.sendToCemetery(this, board);
             }else if(board.getGrid()[this.y][this.x-1] == null){
                 //moving piece
                 board.getGrid()[this.y][this.x-1] = this;
@@ -124,7 +133,7 @@ public class Piece {
 
         }else if(direction.equalsIgnoreCase("right")){
             if(!board.inBounds(x+1, y)){
-                board.getGrid()[y][x] = null;
+                player.sendToCemetery(this, board);
             }else if(board.getGrid()[this.y][this.x+1] == null){
                 //moving piece
                 board.getGrid()[this.y][this.x+1] = this;
@@ -139,13 +148,12 @@ public class Piece {
         }
     }
 
+
     public Type getRight() {
         return right;
     }
 
-    public Type getLeft() {
-        return left;
-    }
+    public Type getLeft() { return left; }
 
     public Type getTop() {
         return top;
@@ -155,13 +163,7 @@ public class Piece {
         return bottom;
     }
 
-    public Color getColor() {
-        return color;
-    }
-
-    public String getName() {
-        return name;
-    }
+    public String getName() { return name; }
 
     public void setLeft(Type left) {
         this.left = left;
@@ -179,14 +181,6 @@ public class Piece {
         this.bottom = bottom;
     }
 
-    public void setColor(Color color) {
-        this.color = color;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public void setX(Integer x) {
         this.x = x;
     }
@@ -195,12 +189,8 @@ public class Piece {
         this.y = y;
     }
 
-    public Integer getX() {
-        return x;
-    }
+    public Integer getX() {return x; }
 
-    public Integer getY() {
-        return y;
-    }
+    public Integer getY() { return y;}
 
 }

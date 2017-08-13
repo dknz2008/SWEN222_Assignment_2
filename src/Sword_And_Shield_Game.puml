@@ -1,0 +1,26 @@
+@startuml
+class Board{
+    + checkIfPositionIsEmpty(int x, int y): boolean
+    + attackingYellowFace(Player player): boolean
+    + attackingGreenFace(Player player): boolean
+    + inBounds(int x, int y): boolean
+    + addToGrid(int x, int y, Piece p): boolean
+}
+
+class Player{
+    + pieceCurrentlyPlayed(String name): Piece
+    + sendToCemetery(Piece p, Board board): void
+    + findPiece(String name): Piece
+    + isCreationTileFree(Board board): boolean
+    + makePiece(String name, int rotation): Piece
+    + createPieceOnBoard(Board board, Piece p): void
+    + createPiece(Board board, Piece p, int x, int y): void
+    + populatePieceList(): void
+}
+
+class Piece{
+    + rotate(int rotation): Piece
+
+
+}
+@enduml

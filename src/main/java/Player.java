@@ -24,8 +24,10 @@ public class Player {
 
 
     /**
-     * Whether the piece has been placed on the board or not
-     * @return
+     * Whether the piece has been placed on the board or not.
+     * Returns the piece that is currently in play, or null
+     * if piece does not exist.
+     * @return Piece
      */
 
     public Piece pieceCurrentlyPlayed(String name){
@@ -41,6 +43,11 @@ public class Player {
         return color;
     }
 
+    /**
+     * Sends selected piece to cemetery
+     * @param p the piece being sent to cemetery
+     * @param board the board the piece comes from
+     */
     public void sendToCemetery(Piece p, Board board){
         inPlay.remove(p);
         cemetery.add(p);
@@ -48,6 +55,12 @@ public class Player {
         p.setX(null);
         p.setY(null);
     }
+
+    /**
+     * Finds piece in players barracks
+     * @param name the name of the piece
+     * @return Piece
+     */
 
     public Piece findPiece(String name){
         for(Piece p: barracks){
@@ -62,15 +75,20 @@ public class Player {
         return barracks;
     }
 
+    /**
+     * Checks if the creation tile is free for the player
+     * @param board the game board
+     * @return boolean
+     */
     public boolean isCreationTileFree(Board board){
         return board.checkIfPositionIsEmpty(creationTileX, creationTileY);
     }
 
     /**
      * Returns piece with correct orientation
-     * @param name
-     * @param rotation
-     * @return
+     * @param name name of piece
+     * @param rotation amount the piece should be rotated by
+     * @return Piece
      */
     public Piece makePiece(String name, int rotation){
         Piece p = findPiece(name.toUpperCase());
@@ -83,15 +101,22 @@ public class Player {
 
     /**
      * Puts piece onto creation tile
-     * @param board
-     * @param p
-     * @return
+     * @param board the Board
+     * @param p the piece you're creating
+     *
      */
-    public boolean createPieceOnBoard(Board board, Piece p){
+    public void createPieceOnBoard(Board board, Piece p){
         createPiece(board, p, creationTileX, creationTileY);
-        return true;
     }
 
+    /**
+     * Creates the piece and adds it to the specified x and y coordinates
+     * as well as puts it in play and removes from barracks.
+     * @param board the Board
+     * @param p the Piece
+     * @param x x coordinate
+     * @param y y coordinate
+     */
     public void createPiece(Board board, Piece p, int x, int y){
         board.getGrid()[y][x] = p;
         p.setX(x);
@@ -104,8 +129,11 @@ public class Player {
         return inPlay;
     }
 
-    public void populatePieceList(){
 
+    /**
+     * Populates list of pieces with the 24 possible pieces
+     */
+    public void populatePieceList(){
         char name;
 
         //setting characters to be capital for yellow player and non capital for green 

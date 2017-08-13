@@ -42,6 +42,12 @@ public class Board {
         return grid;
     }
 
+    /**
+     * Checks if the grid at specified x and y coordinate is empty
+     * @param x the x coordinate
+     * @param y the y coordinate
+     * @return boolean
+     */
     public boolean checkIfPositionIsEmpty(int x, int y) {
         if (!inBounds(x, y)) {
             return false;
@@ -49,6 +55,11 @@ public class Board {
         return (grid[y][x] == null);
     }
 
+    /**
+     * Check if the yellow face is being attacked by player (sword facing it)
+     * @param player the player you are checking against
+     * @return boolean
+     */
     public boolean attackingYellowFace(Player player) {
         for (Piece p : player.getInPlay()) {
             if (p.getX() == 7 && p.getY() == 8) {
@@ -62,6 +73,11 @@ public class Board {
         return false;
     }
 
+    /**
+     * Check if the green face is being attacked by player (sword facing it)
+     * @param player the player you are checking against
+     * @return boolean
+     */
     public boolean attackingGreenFace(Player player) {
         for (Piece p : player.getInPlay()) {
             if (p.getX() == 2 && p.getY() == 1) {
@@ -76,17 +92,23 @@ public class Board {
     }
 
 
+    /**
+     * Check if piece is in bounds of the board or not
+     * @param x x coordinate you are checking
+     * @param y y coordinate you are checking
+     * @return boolean
+     */
     public boolean inBounds(int x, int y) {
         return !(x < 2 && y < 2 || x > 7 && y > 7 || x < 0 || y < 0 || x >= 10 || y >= 10);
     }
 
 
     /**
-     * If there is an empty space add piece to grid at position
+     * If there is an empty space add piece to grid at specified position
      *
-     * @param x
-     * @param y
-     * @param p
+     * @param x x coordinate of piece you want to add at
+     * @param y y coordinate of the piece you want to add at
+     * @param p the piece you want to add
      */
 
     public boolean addToGrid(int x, int y, Piece p) {

@@ -1,5 +1,6 @@
 import org.junit.Test;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import static org.junit.Assert.assertEquals;
@@ -24,6 +25,10 @@ public class InputTests {
      * @param color the color that the piece belongs to
      */
     public void assertGreenPieceAt(int x, int y, String name, Color color){
+
+        for(Piece p: game.greenPlayer.getInPlay()){
+            System.out.println(p.getName());
+        }
         assertTrue(game.greenPlayer.pieceCurrentlyPlayed(name) != null);
         assertTrue(game.greenPlayer.pieceCurrentlyPlayed(name).getX() == x);
         assertTrue(game.greenPlayer.pieceCurrentlyPlayed(name).getY() == y);
@@ -133,6 +138,61 @@ public class InputTests {
 
 
     /**
+     * Tests the win condition when attacking yellow face
+     */
+    @Test
+    public void testWinConditionAgainstYellowFace1(){
+        init();
+
+        game.currentTurn = game.yellowPlayer;
+        game.drawGrid(game.board.getGrid());
+
+        game.parseCreatePiece(new Scanner("create g 0\n"), game.yellowPlayer);
+        game.drawGrid(game.board.getGrid());
+        game.parseStageTwo(new Scanner("g\nmove down\n"), game.yellowPlayer, new ArrayList<>() );
+        game.drawGrid(game.board.getGrid());
+
+        assertEquals(game.hasWon(), game.yellowPlayer);
+    }
+
+    /**
+     * Tests the win condition when attacking yellow face
+     */
+    @Test
+    public void testWinConditionAgainstYellowFace2(){
+        init();
+
+        game.currentTurn = game.yellowPlayer;
+        game.drawGrid(game.board.getGrid());
+
+        game.parseCreatePiece(new Scanner("create g 0\n"), game.yellowPlayer);
+        game.drawGrid(game.board.getGrid());
+        game.parseStageTwo(new Scanner("g\nmove right\n"), game.yellowPlayer, new ArrayList<>() );
+        game.drawGrid(game.board.getGrid());
+
+        assertEquals(game.hasWon(), game.yellowPlayer);
+    }
+
+    /**
+     * Tests the invalid win condition when nobody wins
+     */
+    @Test
+    public void testInvalidWinCondition(){
+        init();
+
+        game.currentTurn = game.yellowPlayer;
+        game.drawGrid(game.board.getGrid());
+
+        game.parseCreatePiece(new Scanner("create g 0\n"), game.yellowPlayer);
+        game.drawGrid(game.board.getGrid());
+
+        //no winning player
+        assertEquals(game.hasWon(), null);
+    }
+
+
+
+    /**
      * Tests the win condition when sword is against face
      */
     @Test
@@ -159,28 +219,95 @@ public class InputTests {
 
     /**
      * Test shifting multiple pieces down the board (in the case where sword meets shield)
+     * C moves down and pushes D, D moves down and pushes B (multiple sword vs shield reactions)
      */
     @Test
     public void testSwordMeetsShieldReaction1(){
-        Game game = new Game();
-
-        game.greenPlayer.createPiece(game.board, game.greenPlayer.makePiece("c", 0), 4, 1); //Shield top and bottom
-        game.greenPlayer.createPiece(game.board, game.greenPlayer.makePiece("d", 0), 4, 3);   //Sword top, shield bottom
-//        game.greenPlayer.createPiece(game.board, game.greenPlayer.makePiece("b", 0), 4, 5); //Sword top, sword bottom
-
-        game.drawGrid(game.board.getGrid());
+        init();
 
         game.currentTurn = game.greenPlayer;
 
-        game.parseStageTwo(new Scanner("c\nmove down\n"), game.greenPlayer, new ArrayList<>() );
+        game.greenPlayer.createPiece(game.board, game.greenPlayer.makePiece("c", 0), 4, 1); //Shield top and bottom
+        game.greenPlayer.createPiece(game.board, game.greenPlayer.makePiece("d", 0), 4, 3);   //Sword top, shield bottom
+        game.greenPlayer.createPiece(game.board, game.greenPlayer.makePiece("b", 0), 4, 5); //Sword top, sword bottom
+
+        game.parseStageTwo(new Scanner("c\nmove down\n"), game.greenPlayer, new ArrayList<>());
+        game.parseStageTwo(new Scanner("pass\n"), game.greenPlayer, new ArrayList<>());
 
         game.drawGrid(game.board.getGrid());
 
         assertGreenPieceAt(4,2, "c", Color.GREEN);
-//        assertGreenPieceAt(4,4, "d", Color.GREEN);
-
-
+        assertGreenPieceAt(4,4, "d", Color.GREEN);
+        assertGreenPieceAt(4,6, "b", Color.GREEN);
     }
 
+
+    /**
+     * Creates a piece on the board and then 'recreates' the piece.
+     * As piece is not there it is not added (still at the position of the original C
+     * that was moved down).
+     */
+    @Test
+    public void testInvalidCreate1(){
+        init();
+        game.currentTurn = game.greenPlayer;
+        game.greenPlayer.createPiece(game.board, game.greenPlayer.makePiece("c", 0), 4, 1);
+        game.parseStageTwo(new Scanner("c\nmove down\n"), game.greenPlayer, new ArrayList<>());
+
+        //input C is not spawned
+        game.parseCreatePiece(new Scanner("create C 0\n"), game.greenPlayer);
+
+        assertGreenPieceAt(4, 2, "c", Color.GREEN);
+    }
+
+
+
+    /**
+     * Creates a piece on the board and then 'recreates' the piece.
+     * As piece is not there it is not added (still at the position of the original C
+     * that was moved down).
+     */
+    @Test
+    public void testInvalidRotate1(){
+        init();
+        game.currentTurn = game.greenPlayer;
+        game.greenPlayer.createPiece(game.board, game.greenPlayer.makePiece("d", 0), 4, 1);
+        game.drawGrid(game.board.getGrid());
+        //rotated once
+        game.parseStageTwo(new Scanner("d\nrotate 90\n"), game.greenPlayer, new ArrayList<>());
+
+        game.drawGrid(game.board.getGrid());
+        List<Piece> movedPieces = new ArrayList<>();
+        movedPieces.add(game.greenPlayer.pieceCurrentlyPlayed("d"));
+        //not re-rotated as piece has already been rotated before
+        game.parseStageTwo(new Scanner("d\nrotate 90\n"), game.greenPlayer, movedPieces);
+        game.drawGrid(game.board.getGrid());
+
+        Piece d = game.greenPlayer.pieceCurrentlyPlayed("d");
+
+        //One rotation not 2 (second one didn't work).
+        assertTrue(Piece.Type.SHIELD == d.getLeft());
+        assertTrue(Piece.Type.SWORD == d.getRight());
+    }
+
+
+    @Test
+    public void testMoveOntoPiece(){
+        init();
+        game.currentTurn = game.yellowPlayer;
+        game.parseCreatePiece(new Scanner("create e 0\n"), game.yellowPlayer);
+        game.parseStageTwo(new Scanner("e\nmove up\n"), game.yellowPlayer, new ArrayList<>());
+        game.parseStageTwo(new Scanner("pass\n"), game.yellowPlayer, new ArrayList<>());
+        game.drawGrid(game.board.getGrid());
+
+        game.currentTurn = game.yellowPlayer;
+        game.parseCreatePiece(new Scanner("create i 0\n"), game.yellowPlayer);
+        game.parseStageTwo(new Scanner("i\nmove up\n"), game.yellowPlayer, new ArrayList<>());
+        game.parseStageTwo(new Scanner("pass\n"), game.yellowPlayer, new ArrayList<>());
+        game.drawGrid(game.board.getGrid());
+
+        assertYellowPieceAt(7, 5, "e", Color.YELLOW);
+        assertYellowPieceAt(7, 6, "i", Color.YELLOW);
+    }
 
 }

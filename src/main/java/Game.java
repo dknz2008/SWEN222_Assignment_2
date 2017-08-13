@@ -9,20 +9,16 @@ public class Game {
 
 
     public enum parseReturnState{
-        SUCCESS, FAIL, UNDO;
+        SUCCESS, FAIL, UNDO
     }
     public enum GameState {
         CREATION, MOVEMENT, DONE
     }
 
-    List<Player> playerList;
     Player currentTurn;
     Board board;
     Player yellowPlayer;
     Player greenPlayer;
-    Player winPlayer = null;
-
-    String stage = "createstage";
 
     private Stack<SavedGameState> savedGameStates;
     List<Piece> movedPieces;
@@ -30,13 +26,10 @@ public class Game {
     public Game() {
         savedGameStates = new Stack<>();
         movedPieces = new ArrayList<>();
-        playerList = new ArrayList<>();
         this.board = new Board();
 
         greenPlayer = new Player(3 - 1, 3 - 1, Color.GREEN);
         yellowPlayer = new Player(8 - 1, 8 - 1, Color.YELLOW);
-        playerList.add(yellowPlayer);
-        playerList.add(greenPlayer);
         greenPlayer.populatePieceList();
         yellowPlayer.populatePieceList();
         currentTurn = yellowPlayer;
@@ -100,6 +93,90 @@ public class Game {
                     p = null;
                 }else{
                     p = player.barracks.get(i++);
+                }
+                System.out.print("| ");
+                if(p != null){
+                    System.out.print(typeSymbol(p.getBottom(), Orientation.BOTTOM));
+                }else{
+                    System.out.print(" ");
+                }
+                System.out.print(" ");
+                temp = i;
+            }
+
+
+            System.out.println("|");
+        }
+
+
+        for(int x = 0; x < grid[0].length; x++) {
+            System.out.print("+");
+            System.out.print("---");
+        }
+        System.out.println("+");
+
+        System.out.println("-----------------------------------------");
+    }
+
+
+
+    private void drawCemetery(Piece[][] grid, Player player){
+
+        System.out.println(player.getColor().toString() + " Cemetery:");
+        System.out.println("-----------------------------------------");
+
+        int i = 0;
+        int temp = 0;
+        for(int y = 0; y < 3; y++){
+
+            Piece p;
+
+            for(int x = 0; x < grid[0].length; x++) {
+                System.out.print("+");
+                System.out.print("---");
+            }
+            System.out.println("+");
+
+            for(int x = 0; x < grid[0].length; x++){
+                if(i >=player.cemetery.size()){
+                    p = null;
+                }else{
+                    p = player.cemetery.get(i++);
+                }
+                System.out.print("| ");
+                if(p != null){
+                    System.out.print(typeSymbol(p.getTop(), Orientation.TOP));
+                    System.out.print(" ");
+                }else{
+                    System.out.print("  ");
+                }
+            }
+            i = temp;
+            System.out.println("|");
+
+            for(int x = 0; x < grid[0].length; x++){
+                if(i >=player.cemetery.size()){
+                    p = null;
+                }else{
+                    p = player.cemetery.get(i++);
+                }
+                System.out.print("|");
+                if(p != null){
+                    System.out.print(typeSymbol(p.getLeft(), Orientation.LEFT));
+                    System.out.print(p.getName());
+                    System.out.print(typeSymbol(p.getRight(), Orientation.RIGHT));
+                }else{
+                    System.out.print("   ");
+                }
+            }
+            i = temp;
+            System.out.println("|");
+
+            for(int x = 0; x < grid[0].length; x++){
+                if(i >=player.cemetery.size()){
+                    p = null;
+                }else{
+                    p = player.cemetery.get(i++);
                 }
                 System.out.print("| ");
                 if(p != null){
@@ -220,7 +297,7 @@ public class Game {
         }
 
         if(board.attackingYellowFace(yellowPlayer) || board.attackingYellowFace(greenPlayer)){
-            return yellowPlayer;
+            return greenPlayer;
         }
         return null;
     }
@@ -251,6 +328,7 @@ public class Game {
             if(currentTurn.isCreationTileFree(board)){
                 if(parseAskForCreatePiece(reader) == parseReturnState.SUCCESS){
                     drawBarracks(board.getGrid(), currentTurn);
+                    drawCemetery(board.getGrid(), currentTurn);
                     parseReturnState check = parseCreatePiece(reader, currentTurn);
                     while(check == parseReturnState.FAIL){
                         check = parseCreatePiece(reader, currentTurn);
@@ -408,6 +486,7 @@ public class Game {
                 System.out.println("auto executing 1 reaction");
                 System.out.println(reactionManager.printReactionInformation(reactions.get(0)));
                 reactions.get(0).executeReaction(board);
+                parseReactions(s, reactions.get(0).getReactive());
             }else if(reactions.size() > 1){
                 drawGrid(board.getGrid());
                 int i = 0;

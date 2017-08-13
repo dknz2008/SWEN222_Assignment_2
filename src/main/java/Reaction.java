@@ -4,7 +4,7 @@
 
 public class Reaction {
 
-    private enum Rules{
+    public enum Rules{
         SWORDNOTHING, SWORDSHIELD, SWORDSWORD;
     }
     private Piece current;
