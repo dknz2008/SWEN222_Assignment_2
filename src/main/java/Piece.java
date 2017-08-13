@@ -23,7 +23,7 @@ public class Piece {
         CLOCKWISE, ANTICLOCKWISE
     }
 
-    Piece(Type left, Type right, Type top, Type bottom, Color color, String name, Player player){
+    public Piece(Type left, Type right, Type top, Type bottom, Color color, String name, Player player){
         this.left = left;
         this.right = right;
         this.top = top;

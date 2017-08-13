@@ -1,4 +1,16 @@
 @startuml
+
+
+Piece "1..*" o-- "1" Player
+Board "1" o-- "1" Game
+Game "1" o-- "2" Player
+ReactionManager --> "1" SwordNothingRule
+ReactionManager --> "1" SwordShieldRule
+ReactionManager --> "1" SwordSwordRule
+ReactionManager --> "0...*" Reaction
+Game  --> "1..*" ReactionManager
+Game -> "0...*" SavedGameState
+
 class Board{
     + checkIfPositionIsEmpty(int x, int y): boolean
     + attackingYellowFace(Player player): boolean
@@ -20,7 +32,53 @@ class Player{
 
 class Piece{
     + rotate(int rotation): Piece
-
-
+    + rotatePiece(Piece.Rotation rot): void
+    + move(String direction, Board board): void
 }
+
+interface Rule{
+    + collide(Piece current, Piece reactive, Piece.Type currentType, Piece.Type reactiveType, Orientation pointOfContact): List<Reaction>
+}
+
+
+class SwordNothingRule implements Rule{
+    + collide(Piece current, Piece reactive, Piece.Type currentType, Piece.Type reactiveType, Orientation pointOfContact): List<Reaction>
+}
+
+class SwordSwordRule implements Rule{
+    + collide(Piece current, Piece reactive, Piece.Type currentType, Piece.Type reactiveType, Orientation pointOfContact): List<Reaction>
+}
+
+class SwordShieldRule implements Rule{
+    + collide(Piece current, Piece reactive, Piece.Type currentType, Piece.Type reactiveType, Orientation pointOfContact): List<Reaction>
+}
+
+
+class Reaction{
+    + executeReaction(Board board): void
+}
+
+class ReactionManager{
+    + workOutReactions(int x, int y, Board board): List<Reaction>
+}
+
+class SavedGameState{
+    + UndoGame(Game game): void
+}
+
+class Game{
+    - drawBarracks(Piece[][] grid, Player player): void
+    - drawCemetery(Piece[][] grid, Player player): void
+    + drawGrid(Piece[][] grid): void
+    - typeSymbol(Piece.Type t, Orientation orientation): String
+    + hasWon(): Player
+    + gameLoop(): void
+    + parseTurn(Scanner reader, List<Piece> movedPieces): void
+    + parseStageTwo(Scanner s, Player player, List<Piece> movedPieces): parseReturnStage
+    + parseReactionInput(Scanner s, int i, ReactionManager reactionManager, List<Reaction> reactions): parseReturnState
+    - Clone(boolean isCreation, boolean isPass): void
+    - Undo(): void
+}
+
+
 @enduml

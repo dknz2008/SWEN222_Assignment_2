@@ -48,6 +48,11 @@ public class Reaction {
         this.rule = rule;
     }
 
+
+    /**
+     * Execute reaction between two Pieces
+     * @param board the board
+     */
     public void executeReaction(Board board){
         System.out.println(currentType);
         if(rule == Rules.SWORDNOTHING){
@@ -70,8 +75,6 @@ public class Reaction {
         }else{
             System.out.println("NO REACTION -- THIS SHOULD NOT HAPPEN ");
         }
-
-
     }
 
 }

@@ -36,6 +36,11 @@ public class Game {
 
     }
 
+    /**
+     * Draws Barracks
+     * @param grid, the grid of pieces
+     * @param player, the current player
+     */
     private void drawBarracks(Piece[][] grid, Player player){
 
         System.out.println(player.getColor().toString() + " Barracks:");
@@ -119,7 +124,11 @@ public class Game {
     }
 
 
-
+    /**
+     * Draws the Cemetery
+     * @param grid the grid of pieces
+     * @param player the current player
+     */
     private void drawCemetery(Piece[][] grid, Player player){
 
         System.out.println(player.getColor().toString() + " Cemetery:");
@@ -202,6 +211,10 @@ public class Game {
         System.out.println("-----------------------------------------");
     }
 
+    /**
+     * Draws the grid of pieces
+     * @param grid grid of pieces
+     */
     public void drawGrid(Piece[][] grid){
 
         for(int y = 0; y < grid.length; y++){
@@ -273,6 +286,12 @@ public class Game {
     }
 
 
+    /**
+     * Returns the associated symbol with the type
+     * @param t the type
+     * @param orientation the orientation of the type
+     * @return String
+     */
     private String typeSymbol(Piece.Type t, Orientation orientation) {
         if (t == Piece.Type.SWORD) {
             if (orientation == Orientation.LEFT || orientation == Orientation.RIGHT) {
@@ -291,6 +310,12 @@ public class Game {
     }
 
 
+    /**
+     * returns the player has has won if any,
+     * or null if there is no current winning
+     * player
+     * @return Player
+     */
     public Player hasWon(){
         if(board.attackingGreenFace(yellowPlayer) || board.attackingGreenFace(greenPlayer)){
             return yellowPlayer;
@@ -302,7 +327,9 @@ public class Game {
         return null;
     }
 
-
+    /**
+     * the main gameloop
+     */
     public void gameLoop() {
         Scanner reader = new Scanner(System.in);  // Reading from System.in
 
@@ -312,7 +339,14 @@ public class Game {
 
         System.out.println(hasWon().getColor() + " Player Wins!!!!");
     }
+
     private GameState state = GameState.CREATION;
+
+
+    /**
+     * parses the turn loop
+     * @param reader the scanner
+     */
     public void parseTurnLoop(Scanner reader){
         System.out.println(currentTurn.getColor() + "'s Turn");
         state = GameState.CREATION;
@@ -323,6 +357,12 @@ public class Game {
         }
         currentTurn = getOpponent(currentTurn);
     }
+
+    /**
+     * parses the players turn
+     * @param reader the scanner
+     * @param movedPieces a list of the pieces that have been moved so far
+     */
     public void parseTurn(Scanner reader, List<Piece> movedPieces) {
         if (state == GameState.CREATION) {
             if(currentTurn.isCreationTileFree(board)){
@@ -394,8 +434,9 @@ public class Game {
 
     /**
      * Parses user input for either passing the turn or developing pieces
-     * @param s
-     * @param player
+     * @param s the scanner
+     * @param player the current player
+     * @return parseReturnState - the return state whether it is successful or not (or undo)
      */
     public parseReturnState parseStageTwo(Scanner s, Player player, List<Piece> movedPieces){
         System.out.println("Either 'pass' or type input name of piece you would like to develop: '<letter>'");
@@ -476,6 +517,17 @@ public class Game {
         }
     }
 
+    /**
+     *
+     * Parses reactions, if it is one reaction
+     * it executes it automatically, otherwise
+     * calls the next method which
+     * allows the user to enter in numbers for
+     * the associated reactions
+     *
+     * @param s the scanner
+     * @param piece current piece
+     */
     public void parseReactions(Scanner s, Piece piece){
         //1. work out the reactions and add them to a list
         //iterate over all the reactions
@@ -505,6 +557,17 @@ public class Game {
 
     }
 
+    /**
+     * Parses reaction input,
+     * allows the user to enter in numbers for
+     * the associated reactions
+     *
+     * @param s scanner
+     * @param i the number of reactions
+     * @param reactionManager works out reactions
+     * @param reactions stores the reactions
+     * @return the success state
+     */
     public parseReturnState parseReactionInput(Scanner s, int i, ReactionManager reactionManager, List<Reaction> reactions){
         System.out.println("What reaction do you want to apply '<number>'");
 
@@ -542,6 +605,11 @@ public class Game {
         g.gameLoop();
     }
 
+    /**
+     * Deepclones the game information
+     * @param isCreation if player is in creation state
+     * @param isPass if player has passed or not
+     */
     private void Clone(boolean isCreation, boolean isPass){
         Cloner cloner = new Cloner();
         Board boardclone = cloner.deepClone(board);
@@ -552,6 +620,9 @@ public class Game {
         savedGameStates.push(new SavedGameState(boardclone, yellowPlayerClone, greenPlayerClone, movedPiecesClone, cloner.deepClone(currentTurn),isCreation,isPass));
     }
 
+    /**
+     * undoes move (assuming >= 1 move has been made thus far)
+     */
     private void Undo(){
         if(savedGameStates.size() >= 1){
             SavedGameState savedGame = savedGameStates.pop();

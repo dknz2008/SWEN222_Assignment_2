@@ -152,7 +152,7 @@ public class InputTests {
         game.parseStageTwo(new Scanner("g\nmove down\n"), game.yellowPlayer, new ArrayList<>() );
         game.drawGrid(game.board.getGrid());
 
-        assertEquals(game.hasWon(), game.yellowPlayer);
+        assertEquals(game.hasWon(), game.greenPlayer);
     }
 
     /**
@@ -170,7 +170,7 @@ public class InputTests {
         game.parseStageTwo(new Scanner("g\nmove right\n"), game.yellowPlayer, new ArrayList<>() );
         game.drawGrid(game.board.getGrid());
 
-        assertEquals(game.hasWon(), game.yellowPlayer);
+        assertEquals(game.hasWon(), game.greenPlayer);
     }
 
     /**
@@ -261,7 +261,6 @@ public class InputTests {
     }
 
 
-
     /**
      * Creates a piece on the board and then 'recreates' the piece.
      * As piece is not there it is not added (still at the position of the original C
@@ -309,5 +308,26 @@ public class InputTests {
         assertYellowPieceAt(7, 5, "e", Color.YELLOW);
         assertYellowPieceAt(7, 6, "i", Color.YELLOW);
     }
+
+
+    /**
+     * Tests moving a piece and then calling undo and checking
+     * if piece has moved back to its original position of (7, 7)
+     */
+    @Test
+    public void testUndoMove(){
+        init();
+        game.currentTurn = game.yellowPlayer;
+        game.parseCreatePiece(new Scanner("create e 0\n"), game.yellowPlayer);
+        game.parseStageTwo(new Scanner("e\nmove up\n"), game.yellowPlayer, new ArrayList<>());
+        game.drawGrid(game.board.getGrid());
+        game.parseCreatePiece(new Scanner("undo\n"), game.yellowPlayer);
+        game.parseStageTwo(new Scanner("pass\n"), game.yellowPlayer, new ArrayList<>());
+        game.drawGrid(game.board.getGrid());
+
+        game.currentTurn = game.yellowPlayer;
+        assertTrue(game.board.getGrid()[7][7] != null);
+    }
+
 
 }

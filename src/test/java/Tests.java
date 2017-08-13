@@ -142,13 +142,4 @@ public class Tests {
         assert game.board.getGrid()[8][8] != p4;
     }
 
-//    @Test
-//    public void testInvalidPlacePiece_2() {
-//        Game game = new Game();
-//        Piece p = game.greenPlayer.makePiece("A", 0);
-//        game.board.addToGrid(1, 0, p);
-//        assert game.board.getGrid()[0][0] != p;
-//    }
-
-
 }

@@ -9,7 +9,7 @@ public class ReactionManager {
 
     private static Rule[] rules = new Rule[]{new SwordNothingRule(), new SwordShieldRule(), new SwordSwordRule()};
 
-    ReactionManager(){
+    public ReactionManager(){
 
     }
 
@@ -50,7 +50,6 @@ public class ReactionManager {
                 }
             }
         }
-
         return reactionList;
     }
 
