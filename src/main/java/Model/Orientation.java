@@ -1,3 +1,5 @@
+package Model;
+
 /**
  * Created by TML_TEST on 10/08/2017.
  */

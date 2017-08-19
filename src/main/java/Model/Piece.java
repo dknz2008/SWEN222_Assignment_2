@@ -1,4 +1,4 @@
-import java.util.List;
+package Model;
 
 /**
  * Created by TML_TEST on 25/07/2017.
@@ -40,7 +40,7 @@ public class Piece {
     /**
      * Rotates piece by rotation angle clockwise
      * @param rotation the angle of rotation
-     * @return Piece the piece that was rotated
+     * @return Model.Piece the piece that was rotated
      */
     public Piece rotate(int rotation){
         int r = rotation/90;

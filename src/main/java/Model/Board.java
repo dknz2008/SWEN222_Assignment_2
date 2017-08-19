@@ -1,5 +1,4 @@
-import java.util.ArrayList;
-import java.util.List;
+package Model;
 
 /**
  * Created by TML_TEST on 25/07/2017.

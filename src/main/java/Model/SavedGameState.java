@@ -1,4 +1,4 @@
-import com.rits.cloning.Cloner;
+package Model;
 
 import java.util.List;
 
@@ -25,12 +25,12 @@ public class SavedGameState {
         this.currentPlayer = currentPlayer;
     }
 
-    public void UndoGame(Game game){
-        game.board = savedBoard;
-        game.currentTurn = currentPlayer;
-        game.greenPlayer = savedgreenPlayer;
-        game.yellowPlayer = savedyellowPlayer;
-        game.movedPieces = savedMovedPieces;
+    public void UndoGame(Model model){
+        model.board = savedBoard;
+        model.currentTurn = currentPlayer;
+        model.greenPlayer = savedgreenPlayer;
+        model.yellowPlayer = savedyellowPlayer;
+        model.movedPieces = savedMovedPieces;
     }
 
     public boolean isWasCreation() {

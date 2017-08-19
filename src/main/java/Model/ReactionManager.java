@@ -1,3 +1,5 @@
+package Model;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,7 +56,7 @@ public class ReactionManager {
     }
 
     public String printReactionInformation(Reaction reaction){
-       return ("Reaction between " + reaction.getCurrent().getName() + " and "
+       return ("Model.Reaction between " + reaction.getCurrent().getName() + " and "
                 + reaction.getReactive().getName() + ": " + reaction.getCurrentType().toString() + " vs "  + reaction.getReactiveType().toString());
     }
 

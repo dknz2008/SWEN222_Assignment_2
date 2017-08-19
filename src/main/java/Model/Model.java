@@ -1,3 +1,5 @@
+package Model;
+
 import com.rits.cloning.Cloner;
 
 import java.util.*;
@@ -5,7 +7,7 @@ import java.util.*;
 /**
  * Created by TML_TEST on 25/07/2017.
  */
-public class Game {
+public class Model extends Observable {
 
 
     public enum parseReturnState{
@@ -23,7 +25,7 @@ public class Game {
     private Stack<SavedGameState> savedGameStates;
     List<Piece> movedPieces;
 
-    public Game() {
+    public Model() {
         savedGameStates = new Stack<>();
         movedPieces = new ArrayList<>();
         this.board = new Board();
@@ -314,7 +316,7 @@ public class Game {
      * returns the player has has won if any,
      * or null if there is no current winning
      * player
-     * @return Player
+     * @return Model.Player
      */
     public Player hasWon(){
         if(board.attackingGreenFace(yellowPlayer) || board.attackingGreenFace(greenPlayer)){
@@ -337,7 +339,7 @@ public class Game {
             parseTurnLoop(reader);
         }
 
-        System.out.println(hasWon().getColor() + " Player Wins!!!!");
+        System.out.println(hasWon().getColor() + " Model.Player Wins!!!!");
     }
 
     private GameState state = GameState.CREATION;
@@ -494,7 +496,7 @@ public class Game {
                 parseReactions(s, piece);
                 return parseReturnState.SUCCESS;
             }else{
-                System.out.println("Piece selected has already been moved before");
+                System.out.println("Model.Piece selected has already been moved before");
                 return parseReturnState.FAIL;
             }
         }
@@ -511,7 +513,7 @@ public class Game {
                 parseReactions(s, piece);
                 return parseReturnState.SUCCESS;
             }else{
-                System.out.println("Piece selected has already been moved before");
+                System.out.println("Model.Piece selected has already been moved before");
                 return parseReturnState.FAIL;
             }
         }
@@ -601,8 +603,8 @@ public class Game {
     }
 
     public static void main(String[] args) {
-        Game g = new Game();
-        g.gameLoop();
+        Model model = new Model();
+        model.gameLoop();
     }
 
     /**

@@ -1,3 +1,5 @@
+package Model;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +29,7 @@ public class Player {
      * Whether the piece has been placed on the board or not.
      * Returns the piece that is currently in play, or null
      * if piece does not exist.
-     * @return Piece
+     * @return Model.Piece
      */
 
     public Piece pieceCurrentlyPlayed(String name){
@@ -59,7 +61,7 @@ public class Player {
     /**
      * Finds piece in players barracks
      * @param name the name of the piece
-     * @return Piece
+     * @return Model.Piece
      */
 
     public Piece findPiece(String name){
@@ -88,7 +90,7 @@ public class Player {
      * Returns piece with correct orientation
      * @param name name of piece
      * @param rotation amount the piece should be rotated by
-     * @return Piece
+     * @return Model.Piece
      */
     public Piece makePiece(String name, int rotation){
         Piece p = findPiece(name.toUpperCase());
@@ -101,7 +103,7 @@ public class Player {
 
     /**
      * Puts piece onto creation tile
-     * @param board the Board
+     * @param board the Model.Board
      * @param p the piece you're creating
      *
      */
@@ -112,8 +114,8 @@ public class Player {
     /**
      * Creates the piece and adds it to the specified x and y coordinates
      * as well as puts it in play and removes from barracks.
-     * @param board the Board
-     * @param p the Piece
+     * @param board the Model.Board
+     * @param p the Model.Piece
      * @param x x coordinate
      * @param y y coordinate
      */
