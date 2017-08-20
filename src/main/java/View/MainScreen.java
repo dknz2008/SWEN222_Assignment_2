@@ -13,18 +13,17 @@ public class MainScreen extends JComponent implements Observer {
         horizontalFrame.setVisible(true);
         horizontalFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        JComponent topButton = new JButton("Left");
-        JComponent bottomButton = new JButton("Right");
-        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+        JPanel mainPanel = new JPanel();
+        horizontalFrame.setLayout(new GroupLayout(mainPanel));
+
+//        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+
         JSplitPane boardAndContent = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         JSplitPane splitPane3 = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
         JSplitPane splitPane4 = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-        JSplitPane splitPane5 = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-
         JSplitPane cemeteryPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 
         JToolBar toolBar = new JToolBar("Still draggable");
-
         //toolbar buttons
         JButton undoBtn = new JButton("Undo");
         JButton passBtn = new JButton("pass");
@@ -34,9 +33,11 @@ public class MainScreen extends JComponent implements Observer {
         toolBar.add(passBtn);
         toolBar.add(surrenderBtn);
 
-        splitPane.setTopComponent(toolBar);
-        splitPane.setPreferredSize(new Dimension(600, 600));
-        splitPane.setBottomComponent(boardAndContent);
+        mainPanel.add(toolBar);
+
+//        splitPane.setTopComponent(toolBar);
+//        splitPane.setPreferredSize(new Dimension(800, 800));
+//        splitPane.setBottomComponent(boardAndContent);
 
 
         boardAndContent.setTopComponent(splitPane3);
@@ -44,20 +45,15 @@ public class MainScreen extends JComponent implements Observer {
         splitPane3.setTopComponent(splitPane4);
         splitPane3.setBottomComponent(cemeteryPane);
 
-        horizontalFrame.add(splitPane, BorderLayout.CENTER);
+        //horizontalFrame.add(splitPane, BorderLayout.CENTER);
         horizontalFrame.setSize(150, 150);
         horizontalFrame.setVisible(true);
 
-        splitPane.setDividerLocation(0.5);
+        splitPane3.setDividerLocation(0.5);
+        boardAndContent.setDividerLocation(0.5);
 
 
-        //board creation
-        JPanel board = new JPanel();
-        boardAndContent.setBottomComponent(board);
-        BoardView boardView = new BoardView();
-        board.add(boardView);
-
-
+        boardAndContent.setBottomComponent(new BoardView());
     }
 
     @Override
