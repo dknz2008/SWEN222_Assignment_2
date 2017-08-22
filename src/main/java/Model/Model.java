@@ -22,6 +22,18 @@ public class Model extends Observable {
     Player yellowPlayer;
     Player greenPlayer;
 
+    public Board getBoard() {
+        return board;
+    }
+
+    public Player getYellowPlayer() {
+        return yellowPlayer;
+    }
+
+    public Player getGreenPlayer() {
+        return greenPlayer;
+    }
+
     private Stack<SavedGameState> savedGameStates;
     List<Piece> movedPieces;
 

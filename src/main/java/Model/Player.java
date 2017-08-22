@@ -25,6 +25,10 @@ public class Player {
     }
 
 
+    public List<Piece> getCemetery() {
+        return cemetery;
+    }
+
     /**
      * Whether the piece has been placed on the board or not.
      * Returns the piece that is currently in play, or null
@@ -139,36 +143,36 @@ public class Player {
         char name;
 
         //setting characters to be capital for yellow player and non capital for green 
-        if(this.color == Color.YELLOW){
+        if(this.color == this.color){
             name = 'A';
         }else{
             name = 'a';
         }
-
-        barracks.add(new Piece(Piece.Type.SWORD, Piece.Type.SHIELD, Piece.Type.SWORD, Piece.Type.SWORD, Color.YELLOW, Character.toString((name++)), this));
-        barracks.add(new Piece(Piece.Type.SWORD, Piece.Type.NOTHING, Piece.Type.SWORD, Piece.Type.SWORD, Color.YELLOW, Character.toString(name++) , this));
-        barracks.add(new Piece(Piece.Type.SHIELD, Piece.Type.SHIELD, Piece.Type.SHIELD, Piece.Type.SHIELD, Color.YELLOW, Character.toString(name++), this));
-        barracks.add(new Piece(Piece.Type.NOTHING, Piece.Type.NOTHING, Piece.Type.SWORD, Piece.Type.SHIELD, Color.YELLOW, Character.toString(name++) , this));
-        barracks.add(new Piece(Piece.Type.NOTHING, Piece.Type.NOTHING, Piece.Type.NOTHING, Piece.Type.NOTHING, Color.YELLOW, Character.toString(name++), this ));
-        barracks.add(new Piece(Piece.Type.SWORD, Piece.Type.SHIELD, Piece.Type.SWORD, Piece.Type.SHIELD, Color.YELLOW, Character.toString(name++), this ));
-        barracks.add(new Piece(Piece.Type.SWORD, Piece.Type.SWORD, Piece.Type.SWORD, Piece.Type.SWORD, Color.YELLOW, Character.toString(name++), this));
-        barracks.add(new Piece(Piece.Type.SHIELD, Piece.Type.NOTHING, Piece.Type.SWORD, Piece.Type.NOTHING, Color.YELLOW, Character.toString(name++), this));
-        barracks.add(new Piece(Piece.Type.NOTHING, Piece.Type.SHIELD, Piece.Type.NOTHING, Piece.Type.NOTHING, Color.YELLOW, Character.toString(name++), this));
-        barracks.add(new Piece(Piece.Type.SHIELD, Piece.Type.SHIELD, Piece.Type.SWORD, Piece.Type.SWORD, Color.YELLOW, Character.toString(name++), this));
-        barracks.add(new Piece(Piece.Type.SWORD, Piece.Type.SHIELD, Piece.Type.SWORD, Piece.Type.NOTHING, Color.YELLOW, Character.toString(name++), this));
-        barracks.add(new Piece(Piece.Type.NOTHING, Piece.Type.NOTHING, Piece.Type.SWORD, Piece.Type.NOTHING, Color.YELLOW, Character.toString(name++), this));
-        barracks.add(new Piece(Piece.Type.NOTHING, Piece.Type.SHIELD, Piece.Type.SWORD, Piece.Type.SHIELD, Color.YELLOW, Character.toString(name++), this));
-        barracks.add(new Piece(Piece.Type.NOTHING, Piece.Type.SHIELD, Piece.Type.NOTHING, Piece.Type.SHIELD, Color.YELLOW, Character.toString(name++), this));
-        barracks.add(new Piece(Piece.Type.SHIELD, Piece.Type.NOTHING, Piece.Type.SWORD, Piece.Type.SWORD, Color.YELLOW, Character.toString(name++), this));
-        barracks.add(new Piece(Piece.Type.SWORD, Piece.Type.NOTHING, Piece.Type.SWORD, Piece.Type.SHIELD, Color.YELLOW, Character.toString(name++), this));
-        barracks.add(new Piece(Piece.Type.SHIELD, Piece.Type.NOTHING, Piece.Type.SWORD, Piece.Type.NOTHING, Color.YELLOW, Character.toString(name++), this));
-        barracks.add(new Piece(Piece.Type.SHIELD, Piece.Type.SHIELD, Piece.Type.SWORD, Piece.Type.NOTHING, Color.YELLOW, Character.toString(name++), this));
-        barracks.add(new Piece(Piece.Type.SHIELD, Piece.Type.SHIELD, Piece.Type.NOTHING, Piece.Type.NOTHING, Color.YELLOW, Character.toString(name++), this));
-        barracks.add(new Piece(Piece.Type.NOTHING, Piece.Type.NOTHING, Piece.Type.SWORD, Piece.Type.SWORD, Color.YELLOW, Character.toString(name++), this));
-        barracks.add(new Piece(Piece.Type.SWORD, Piece.Type.NOTHING, Piece.Type.SWORD, Piece.Type.NOTHING, Color.YELLOW, Character.toString(name++), this));
-        barracks.add(new Piece(Piece.Type.NOTHING, Piece.Type.SHIELD, Piece.Type.SWORD, Piece.Type.NOTHING, Color.YELLOW, Character.toString(name++), this));
-        barracks.add(new Piece(Piece.Type.SHIELD, Piece.Type.SHIELD, Piece.Type.SWORD, Piece.Type.SHIELD, Color.YELLOW, Character.toString(name++), this));
-        barracks.add(new Piece(Piece.Type.SHIELD, Piece.Type.SHIELD, Piece.Type.NOTHING, Piece.Type.SHIELD, Color.YELLOW, Character.toString(name++), this));
+        
+        barracks.add(new Piece(Piece.Type.SWORD, Piece.Type.SHIELD, Piece.Type.SWORD, Piece.Type.SWORD, this.color, Character.toString((name++)), this));
+        barracks.add(new Piece(Piece.Type.SWORD, Piece.Type.NOTHING, Piece.Type.SWORD, Piece.Type.SWORD, this.color, Character.toString(name++) , this));
+        barracks.add(new Piece(Piece.Type.SHIELD, Piece.Type.SHIELD, Piece.Type.SHIELD, Piece.Type.SHIELD, this.color, Character.toString(name++), this));
+        barracks.add(new Piece(Piece.Type.NOTHING, Piece.Type.NOTHING, Piece.Type.SWORD, Piece.Type.SHIELD, this.color, Character.toString(name++) , this));
+        barracks.add(new Piece(Piece.Type.NOTHING, Piece.Type.NOTHING, Piece.Type.NOTHING, Piece.Type.NOTHING, this.color, Character.toString(name++), this ));
+        barracks.add(new Piece(Piece.Type.SWORD, Piece.Type.SHIELD, Piece.Type.SWORD, Piece.Type.SHIELD, this.color, Character.toString(name++), this ));
+        barracks.add(new Piece(Piece.Type.SWORD, Piece.Type.SWORD, Piece.Type.SWORD, Piece.Type.SWORD, this.color, Character.toString(name++), this));
+        barracks.add(new Piece(Piece.Type.SHIELD, Piece.Type.NOTHING, Piece.Type.SWORD, Piece.Type.NOTHING, this.color, Character.toString(name++), this));
+        barracks.add(new Piece(Piece.Type.NOTHING, Piece.Type.SHIELD, Piece.Type.NOTHING, Piece.Type.NOTHING, this.color, Character.toString(name++), this));
+        barracks.add(new Piece(Piece.Type.SHIELD, Piece.Type.SHIELD, Piece.Type.SWORD, Piece.Type.SWORD, this.color, Character.toString(name++), this));
+        barracks.add(new Piece(Piece.Type.SWORD, Piece.Type.SHIELD, Piece.Type.SWORD, Piece.Type.NOTHING, this.color, Character.toString(name++), this));
+        barracks.add(new Piece(Piece.Type.NOTHING, Piece.Type.NOTHING, Piece.Type.SWORD, Piece.Type.NOTHING, this.color, Character.toString(name++), this));
+        barracks.add(new Piece(Piece.Type.NOTHING, Piece.Type.SHIELD, Piece.Type.SWORD, Piece.Type.SHIELD, this.color, Character.toString(name++), this));
+        barracks.add(new Piece(Piece.Type.NOTHING, Piece.Type.SHIELD, Piece.Type.NOTHING, Piece.Type.SHIELD, this.color, Character.toString(name++), this));
+        barracks.add(new Piece(Piece.Type.SHIELD, Piece.Type.NOTHING, Piece.Type.SWORD, Piece.Type.SWORD, this.color, Character.toString(name++), this));
+        barracks.add(new Piece(Piece.Type.SWORD, Piece.Type.NOTHING, Piece.Type.SWORD, Piece.Type.SHIELD, this.color, Character.toString(name++), this));
+        barracks.add(new Piece(Piece.Type.SHIELD, Piece.Type.NOTHING, Piece.Type.SWORD, Piece.Type.NOTHING, this.color, Character.toString(name++), this));
+        barracks.add(new Piece(Piece.Type.SHIELD, Piece.Type.SHIELD, Piece.Type.SWORD, Piece.Type.NOTHING, this.color, Character.toString(name++), this));
+        barracks.add(new Piece(Piece.Type.SHIELD, Piece.Type.SHIELD, Piece.Type.NOTHING, Piece.Type.NOTHING, this.color, Character.toString(name++), this));
+        barracks.add(new Piece(Piece.Type.NOTHING, Piece.Type.NOTHING, Piece.Type.SWORD, Piece.Type.SWORD, this.color, Character.toString(name++), this));
+        barracks.add(new Piece(Piece.Type.SWORD, Piece.Type.NOTHING, Piece.Type.SWORD, Piece.Type.NOTHING, this.color, Character.toString(name++), this));
+        barracks.add(new Piece(Piece.Type.NOTHING, Piece.Type.SHIELD, Piece.Type.SWORD, Piece.Type.NOTHING, this.color, Character.toString(name++), this));
+        barracks.add(new Piece(Piece.Type.SHIELD, Piece.Type.SHIELD, Piece.Type.SWORD, Piece.Type.SHIELD, this.color, Character.toString(name++), this));
+        barracks.add(new Piece(Piece.Type.SHIELD, Piece.Type.SHIELD, Piece.Type.NOTHING, Piece.Type.SHIELD, this.color, Character.toString(name++), this));
     }
 
 }

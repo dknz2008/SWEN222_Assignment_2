@@ -15,6 +15,10 @@ public class Piece {
 
     private Integer x, y; //x, y coordinate for where it is placed on board (null if not placed anywhere)
 
+    public Color getColor() {
+        return color;
+    }
+
     public enum Type {
         SWORD, SHIELD, NOTHING
     }

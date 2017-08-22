@@ -9,10 +9,9 @@ public class View extends JComponent implements Observer {
 
     Model.Model model;
 
-
     View(Model.Model m) {
         this.model = m;
-        Menu menu = new Menu();
+        Menu menu = new Menu(m);
     }
 
     private void createBoard(){
@@ -21,7 +20,8 @@ public class View extends JComponent implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-        System.out.println("painting");repaint();
+        System.out.println("painting");
+        repaint();
     }
 
     @Override

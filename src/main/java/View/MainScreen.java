@@ -1,59 +1,73 @@
 package View;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.util.Observable;
 import java.util.Observer;
 
 public class MainScreen extends JComponent implements Observer {
 
-    public MainScreen(){
+    Model.Model model;
+
+    public MainScreen(Model.Model m){
+
+        this.model = m;
+
+        //setting up frame for main screen
         JFrame horizontalFrame = new JFrame("Sword and Shield Game");
-        horizontalFrame.setSize(1600, 800);
         horizontalFrame.setVisible(true);
         horizontalFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        JPanel mainPanel = new JPanel();
-        horizontalFrame.setLayout(new GroupLayout(mainPanel));
+        //Creating Panes
+        //JSplitPane
+        JSplitPane yellowContentAndEverythingElse = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+        JSplitPane boardAndGreenContent = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+        JSplitPane inventoriesGreen = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+        JSplitPane inventoriesYellow = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 
-//        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-
-        JSplitPane boardAndContent = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-        JSplitPane splitPane3 = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-        JSplitPane splitPane4 = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-        JSplitPane cemeteryPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-
+        //Creating Toolbar
         JToolBar toolBar = new JToolBar("Still draggable");
         //toolbar buttons
         JButton undoBtn = new JButton("Undo");
         JButton passBtn = new JButton("pass");
         JButton surrenderBtn = new JButton("Surrender");
 
+        //Adding Buttons to Toolbar
         toolBar.add(undoBtn);
         toolBar.add(passBtn);
         toolBar.add(surrenderBtn);
 
-        mainPanel.add(toolBar);
+        //setting up main frame
+        horizontalFrame.setLayout(new BorderLayout());
+        horizontalFrame.add(toolBar, BorderLayout.NORTH);
+        horizontalFrame.add(yellowContentAndEverythingElse, BorderLayout.CENTER);
 
-//        splitPane.setTopComponent(toolBar);
-//        splitPane.setPreferredSize(new Dimension(800, 800));
-//        splitPane.setBottomComponent(boardAndContent);
+        yellowContentAndEverythingElse.setTopComponent(boardAndGreenContent);
+        yellowContentAndEverythingElse.setBottomComponent(inventoriesYellow);
+
+        boardAndGreenContent.setTopComponent(inventoriesGreen);
+
+        inventoriesGreen.setTopComponent(new BarracksView(model, model.getGreenPlayer()));
+        inventoriesGreen.setBottomComponent(new CemeteryView(model, model.getGreenPlayer()));
+
+        inventoriesYellow.setTopComponent(new BarracksView(model, model.getYellowPlayer()));
+        inventoriesYellow.setBottomComponent(new CemeteryView(model, model.getYellowPlayer()));
+
+        boardAndGreenContent.setSize(700, 800);
+        inventoriesGreen.setSize(150, 400);
+        inventoriesYellow.setSize(150, 400);
 
 
-        boardAndContent.setTopComponent(splitPane3);
+        yellowContentAndEverythingElse.setDividerLocation(0.4);
+        boardAndGreenContent.setDividerLocation(0.5);
+        inventoriesGreen.setDividerLocation(0.5);
+        inventoriesYellow.setDividerLocation(0.5);
 
-        splitPane3.setTopComponent(splitPane4);
-        splitPane3.setBottomComponent(cemeteryPane);
+        boardAndGreenContent.setBottomComponent(new BoardView(model));
 
-        //horizontalFrame.add(splitPane, BorderLayout.CENTER);
-        horizontalFrame.setSize(150, 150);
-        horizontalFrame.setVisible(true);
-
-        splitPane3.setDividerLocation(0.5);
-        boardAndContent.setDividerLocation(0.5);
-
-
-        boardAndContent.setBottomComponent(new BoardView());
+        //horizontalFrame.setVisible(true);
+        horizontalFrame.setSize(1600, 800);
     }
 
     @Override
