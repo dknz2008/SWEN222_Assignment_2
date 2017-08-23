@@ -1,5 +1,7 @@
 package View;
 
+import Controller.Controller;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.Observable;
@@ -11,7 +13,9 @@ public class View extends JComponent implements Observer {
 
     View(Model.Model m) {
         this.model = m;
-        Menu menu = new Menu(m);
+        Controller controller = new Controller(m);
+        Menu menu = new Menu(m, controller);
+
     }
 
     private void createBoard(){

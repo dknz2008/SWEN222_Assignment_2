@@ -1,8 +1,11 @@
 package View;
 
+import Controller.Controller;
 import Model.Board;
+import Model.Color;
 import Model.Direction;
 import Model.Piece;
+import org.w3c.dom.css.Rect;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,13 +18,17 @@ import java.util.Observer;
 public class BoardView extends JComponent implements MouseMotionListener, MouseListener, Observer {
 
     Model.Model model;
+    Controller controller;
+    Piece selectedPiece = null;
 //    BoardCell[][] grid;
 
-    protected BoardView(Model.Model m){
+    protected BoardView(Model.Model m, Controller controller){
 
         this.model = m;
+        this.controller = controller;
+        addMouseListener(this);
 
-//        grid = new BoardCell[10][10];
+//        this.grid = new BoardCell[10][10];
 //
 //        Board board = model.getBoard();
 //        int size = Math.min(getWidth(),getHeight())/10;
@@ -59,8 +66,12 @@ public class BoardView extends JComponent implements MouseMotionListener, MouseL
         for(int y = 0; y < 10; y++){
             for(int x = 0; x < 10; x++){
                 Piece piece = board.getGrid()[y][x];
-                BoardCell boardCell = new BoardCell(piece,y*size, x*size, size, size);
-                addMouseListener(boardCell);
+                if(piece == selectedPiece && selectedPiece != null){
+                    g.setColor(java.awt.Color.RED);
+                    g.drawRect(x * size, y * size, size, size);
+                    g.setColor(java.awt.Color.black);
+                }
+                BoardCell boardCell = new BoardCell(piece,x*size, y*size, size, size);
                 boardCell.paintComponent(g);
             }
         }
@@ -68,8 +79,11 @@ public class BoardView extends JComponent implements MouseMotionListener, MouseL
 
 //        for(int y = 0; y < 10; y++){
 //            for(int x = 0; x < 10; x++){
-//                grid[y][x].paintComponent(g);
+//                BoardCell b = grid[y][x];
+//                System.out.println(b.getPiece() !=null);
+//                b.paintComponent(g);
 //            }
+//
 //        }
 
     }
@@ -80,19 +94,45 @@ public class BoardView extends JComponent implements MouseMotionListener, MouseL
     @Override
     public void mouseClicked(MouseEvent e) {
 
-        System.out.println("hey!");
-        if(onGrid){
-            Direction d = getDirectionClicked(e.getPoint());
-            System.out.println("x: " + e.getPoint().getX());
-            System.out.println("y: " + e.getPoint().getY());
-            System.out.println(d);
-        }else{
-            //change/return something to the barracks views to show the difference pieces  (may need to get pass in barracks view or grid
-            //in order so that the board cell knows where it came from.
+        int size = Math.min(getWidth(), getHeight())/10;
+        boolean selected = false;
+        for(int y = 0; y < 10; y++){
+            for(int x = 0; x < 10; x++){
+                Rectangle rect = new Rectangle(y*size, x*size, size, size);
+                if(e.getX() > rect.getX() && e.getX() < rect.getX() + rect.getWidth()){
+                    if(e.getY() > rect.getY() && e.getY() < rect.getY() + rect.getHeight()){
+                        selectedPiece = model.getBoard().getGrid()[y][x];
+                        selected = true;
+                        System.out.println("hey!");
+                    }
+                }
+            }
         }
 
+
+        if(!selected){
+            selectedPiece = null;
+        }
+
+        //Direction d = getDirectionClicked(e.getPoint(), );
+
+        System.out.println("x: " + e.getPoint().getX());
+        System.out.println("y: " + e.getPoint().getY());
+        //System.out.println(d);
+        repaint();
     }
-    
+
+    public Direction getDirectionClicked(Point point, Rectangle boundingBox){
+        int size = (int) boundingBox.getHeight();
+        if(point.getX() > boundingBox.getX() + 0.2*size && point.getX() < boundingBox.getX() + size - 0.2*size){
+            if(point.getY() > boundingBox.getY() && point.getY() < boundingBox.getY() + size*0.2){
+                return Direction.UP;
+            }
+        }
+        return null;
+    }
+
+
 
     @Override
     public void mouseMoved(MouseEvent e) {

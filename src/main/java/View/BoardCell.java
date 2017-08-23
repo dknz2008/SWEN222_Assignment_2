@@ -52,6 +52,10 @@ public class BoardCell extends JComponent implements Observer {
     }
 
 
+    public Piece getPiece() {
+        return piece;
+    }
+
     public boolean getOnGrid(){
         return this.onGrid;
     }

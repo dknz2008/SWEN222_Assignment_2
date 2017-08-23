@@ -1,5 +1,6 @@
 package View;
 
+import Controller.Controller;
 import Controller.MenuController;
 import Model.Model;
 
@@ -15,7 +16,7 @@ public class Menu extends JComponent {
     private JButton quitButton;
     private JFrame frame;
 
-    public Menu(Model m) {
+    public Menu(Model m, Controller controller) {
 
         frame = new JFrame("menu");
         frame.setContentPane(panelMain);
@@ -28,7 +29,7 @@ public class Menu extends JComponent {
         beginGameButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                MainScreen screen = new MainScreen(m);
+                MainScreen screen = new MainScreen(m, controller);
                 frame.dispose();
             }
         });

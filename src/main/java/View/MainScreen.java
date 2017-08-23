@@ -1,5 +1,7 @@
 package View;
 
+import Controller.Controller;
+
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
@@ -9,10 +11,12 @@ import java.util.Observer;
 public class MainScreen extends JComponent implements Observer {
 
     Model.Model model;
+    Controller controller;
 
-    public MainScreen(Model.Model m){
+    public MainScreen(Model.Model m, Controller controller){
 
         this.model = m;
+        this.controller = controller;
 
         //setting up frame for main screen
         JFrame horizontalFrame = new JFrame("Sword and Shield Game");
@@ -48,10 +52,10 @@ public class MainScreen extends JComponent implements Observer {
 
         boardAndGreenContent.setTopComponent(inventoriesGreen);
 
-        inventoriesGreen.setTopComponent(new BarracksView(model, model.getGreenPlayer()));
+        inventoriesGreen.setTopComponent(new BarracksView(model, model.getGreenPlayer(), controller));
         inventoriesGreen.setBottomComponent(new CemeteryView(model, model.getGreenPlayer()));
 
-        inventoriesYellow.setTopComponent(new BarracksView(model, model.getYellowPlayer()));
+        inventoriesYellow.setTopComponent(new BarracksView(model, model.getYellowPlayer(), controller));
         inventoriesYellow.setBottomComponent(new CemeteryView(model, model.getYellowPlayer()));
 
         boardAndGreenContent.setSize(700, 800);
@@ -64,7 +68,7 @@ public class MainScreen extends JComponent implements Observer {
         inventoriesGreen.setDividerLocation(0.5);
         inventoriesYellow.setDividerLocation(0.5);
 
-        boardAndGreenContent.setBottomComponent(new BoardView(model));
+        boardAndGreenContent.setBottomComponent(new BoardView(model, controller));
 
         //horizontalFrame.setVisible(true);
         horizontalFrame.setSize(1600, 800);
