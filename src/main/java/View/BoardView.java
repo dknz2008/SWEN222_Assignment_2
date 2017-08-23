@@ -60,6 +60,21 @@ public class BoardView extends JComponent implements MouseMotionListener, MouseL
         for(int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
                 g.drawRect(i * size, j * size, size, size);
+
+                //green creation tile
+                if(i == 2 && j == 2){
+                    g.setColor(java.awt.Color.GREEN);
+                    g.fillRect(i*size, j*size, size, size);
+                    g.setColor(java.awt.Color.BLACK);
+                }
+
+                //yellow creation tile
+                if(i == 7 && j == 7){
+                    g.setColor(java.awt.Color.ORANGE);
+                    g.fillRect(i*size, j*size, size, size);
+                    g.setColor(java.awt.Color.BLACK);
+                }
+
             }
         }
 

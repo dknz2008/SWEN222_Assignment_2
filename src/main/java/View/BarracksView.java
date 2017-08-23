@@ -98,7 +98,7 @@ public class BarracksView extends JComponent implements MouseMotionListener, Mou
     public void mouseClicked(MouseEvent e) {
 
         boolean set = false;
-        int size = Math.min(getWidth()/8, getHeight()/3);
+        int size = Math.min(getWidth()/3, getHeight()/8);
         int count = 0;
         if(selectedPiece == null) {
             for (int y = 0; y < 8; y++) {
@@ -128,6 +128,7 @@ public class BarracksView extends JComponent implements MouseMotionListener, Mou
                 //TODO refactor this part
                 if (e.getX() > rect.getX() && e.getX() < rect.getX() + rect.getWidth()) {
                     if (e.getY() > rect.getY() && e.getY() < rect.getY() + rect.getHeight()) {
+                        controller.add
                         set = true;
                     }
                 }
