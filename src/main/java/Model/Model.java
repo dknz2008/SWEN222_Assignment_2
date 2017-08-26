@@ -1,6 +1,7 @@
 package Model;
 
 import com.rits.cloning.Cloner;
+import sun.plugin2.message.GetAppletMessage;
 
 import java.util.*;
 
@@ -21,6 +22,11 @@ public class Model extends Observable {
     Board board;
     Player yellowPlayer;
     Player greenPlayer;
+
+
+    public Player getCurrentTurn() {
+        return currentTurn;
+    }
 
     public Board getBoard() {
         return board;
@@ -47,6 +53,8 @@ public class Model extends Observable {
         greenPlayer.populatePieceList();
         yellowPlayer.populatePieceList();
         currentTurn = yellowPlayer;
+
+        //this.addObserver(BarracksView);
 
     }
 
@@ -613,6 +621,55 @@ public class Model extends Observable {
             return yellowPlayer;
         }
     }
+
+
+    public Piece[] getOrientations(Piece selectedPiece){
+        Piece[] orientations = new Piece[4];
+        orientations[0] = selectedPiece;
+        Cloner cloner = new Cloner();
+
+        Piece p1 = cloner.deepClone(selectedPiece);
+        Piece p2 = cloner.deepClone(selectedPiece);
+        Piece p3 = cloner.deepClone(selectedPiece);
+
+        orientations[1] = p1.rotate(90);
+        orientations[2] = p2.rotate(180);
+        orientations[3] = p3.rotate(270);
+
+        setChanged();
+        notifyObservers();
+
+        return orientations;
+    }
+
+
+    public boolean addPiece(Player player, Piece piece){
+        if(player == currentTurn){
+            if(getCurrentTurn().isCreationTileFree(getBoard())) {
+                player.createPieceOnBoard(getBoard(), piece);
+                //parse reactions
+                setChanged();
+                notifyObservers();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void pass(){
+
+        if(state == GameState.CREATION){
+            state = GameState.MOVEMENT;
+        }else if(state == GameState.MOVEMENT){
+            currentTurn = getOpponent(currentTurn);
+            state = GameState.CREATION;
+        } else if(state == GameState.DONE){
+            //END GAME
+        }
+
+    }
+
+
 
     public static void main(String[] args) {
         Model model = new Model();

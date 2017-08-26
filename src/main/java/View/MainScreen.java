@@ -5,6 +5,8 @@ import Controller.Controller;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -20,6 +22,10 @@ public class MainScreen extends JComponent implements Observer {
 
         //setting up frame for main screen
         JFrame horizontalFrame = new JFrame("Sword and Shield Game");
+
+        horizontalFrame.addKeyListener(controller);
+        horizontalFrame.setFocusable(true);
+
         horizontalFrame.setVisible(true);
         horizontalFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
@@ -36,6 +42,22 @@ public class MainScreen extends JComponent implements Observer {
         JButton undoBtn = new JButton("Undo");
         JButton passBtn = new JButton("pass");
         JButton surrenderBtn = new JButton("Surrender");
+
+
+        undoBtn.addActionListener((e) -> System.out.println("test"));
+        passBtn.addActionListener((e) -> {model.pass();});
+        surrenderBtn.addActionListener((e) -> {
+            Menu menu = new Menu(model, controller);
+            horizontalFrame.dispose();
+            JOptionPane.showMessageDialog(menu, "Game surrendered by: " + model.getCurrentTurn());
+        });
+
+//        undoBtn.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//
+//            }
+//        });
 
         //Adding Buttons to Toolbar
         toolBar.add(undoBtn);

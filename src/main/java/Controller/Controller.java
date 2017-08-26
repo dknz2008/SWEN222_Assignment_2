@@ -10,7 +10,7 @@ import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Controller {
+public class Controller implements KeyListener{
 
     Model.Model myModel;
 
@@ -18,29 +18,61 @@ public class Controller {
     Piece pieceSelected;
     List<Piece> movedPieces;
 
+
     public Controller(Model.Model model){
         this.myModel = model;
         movedPieces = new ArrayList<>();
     }
 
     public boolean addPiece(Player player, Piece piece){
-        if(currentTurn.isCreationTileFree(board)){
-            player.createPieceOnBoard(myModel.getBoard(), piece);
-            parseReactions(s, piece);
+        return myModel.addPiece(player, piece);
+    }
+
+    //moving piece?
+    public void pieceMovement(Piece piece, Direction direction){
+//        pieceClicked(piece, boardCell);
+        if(!movedPieces.contains(piece)){
+            piece.move(direction.toString(), myModel.getBoard());
+            movedPieces.add(piece);
+        }else{
+            System.out.println("Piece has already been moved in this turn");
         }
 
     }
 
-    //moving piece?
-    public void pieceMovement(Piece piece, BoardCell boardCell, Direction direction){
-        pieceClicked(piece, boardCell);
-        piece.move(direction.toString(), myModel.getBoard());
-        movedPieces.add(piece);
-    }
-
-    public void pieceClicked(Piece piece, BoardCell boardCell){
+    public void pieceClicked(Piece piece){
         pieceSelected = piece;
     }
 
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if(pieceSelected !=null){
+            switch (e.getKeyChar()){
+                case 'w':
+                    pieceMovement(pieceSelected, Direction.UP);
+                    break;
+                case 'a':
+                    pieceMovement(pieceSelected, Direction.LEFT);
+                    break;
 
+                case 's':
+                    pieceMovement(pieceSelected, Direction.DOWN);
+                    break;
+                case 'd':
+                    pieceMovement(pieceSelected, Direction.RIGHT);
+                    break;
+            }
+        }
+
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+    }
 }

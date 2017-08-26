@@ -14,7 +14,7 @@ public class MenuController implements ActionListener {
 
     public MenuController(Menu menu){
         this.menu = menu;
-//
+
 //        menu.getBeginGameButton().addActionListener(new ActionListener() {
 //            @Override
 //            public void actionPerformed(ActionEvent e) {

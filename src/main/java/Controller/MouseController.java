@@ -24,7 +24,6 @@ public class MouseController implements MouseMotionListener, MouseListener {
     public void mouseClicked(MouseEvent e) {
 
 
-
         for(int y = 0; y < grid.length; y++){
             for(int x = 0; x < grid[0].length; x++){
                 grid[y][x].getDirectionClicked(e.getPoint());

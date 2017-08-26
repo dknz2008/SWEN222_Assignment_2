@@ -73,17 +73,7 @@ public class BarracksView extends JComponent implements MouseMotionListener, Mou
                 g.drawRect(x * size, 0, size, size);
             }
 
-            Piece[] orientations = new Piece[4];
-            orientations[0] = selectedPiece;
-            Cloner cloner = new Cloner();
-
-            Piece p1 = cloner.deepClone(selectedPiece);
-            Piece p2 = cloner.deepClone(selectedPiece);
-            Piece p3 = cloner.deepClone(selectedPiece);
-
-            orientations[1] = p1.rotate(90);
-            orientations[2] = p2.rotate(180);
-            orientations[3] = p3.rotate(270);
+            Piece[] orientations =  model.getOrientations(selectedPiece);
 
             for (int x = 0; x < 4; x++) {
                 int size = Math.min(getWidth() / 3, getHeight() / 8);
@@ -100,7 +90,9 @@ public class BarracksView extends JComponent implements MouseMotionListener, Mou
         boolean set = false;
         int size = Math.min(getWidth()/3, getHeight()/8);
         int count = 0;
-        if(selectedPiece == null) {
+
+        //if piece is currently not selected
+        if(selectedPiece == null &&  player == model.getCurrentTurn() && model.getCurrentTurn().isCreationTileFree(model.getBoard())) {
             for (int y = 0; y < 8; y++) {
                 for (int x = 0; x < 3; x++) {
                     Rectangle rect = new Rectangle(x * size, y * size, size, size);
@@ -128,8 +120,9 @@ public class BarracksView extends JComponent implements MouseMotionListener, Mou
                 //TODO refactor this part
                 if (e.getX() > rect.getX() && e.getX() < rect.getX() + rect.getWidth()) {
                     if (e.getY() > rect.getY() && e.getY() < rect.getY() + rect.getHeight()) {
-                        controller.add
-                        set = true;
+                        Piece[] orientations =  model.getOrientations(selectedPiece);
+                        controller.addPiece(player, orientations[0].rotate(x*90));
+                        set = false;
                     }
                 }
             }
