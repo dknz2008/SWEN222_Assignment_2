@@ -26,6 +26,7 @@ public class BarracksView extends JComponent implements MouseMotionListener, Mou
         this.model = m;
         this.player = player;
         this.controller = controller;
+        model.addObserver(this);
         addMouseListener(this);
     }
 

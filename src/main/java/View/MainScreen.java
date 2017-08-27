@@ -19,6 +19,7 @@ public class MainScreen extends JComponent implements Observer {
     public MainScreen(Model.Model m, Controller controller){
 
         this.model = m;
+        model.addObserver(this);
         this.controller = controller;
 
         //setting up frame for main screen
@@ -84,7 +85,7 @@ public class MainScreen extends JComponent implements Observer {
         inventoriesGreen.setDividerLocation(0.5);
         inventoriesYellow.setDividerLocation(0.5);
 
-        boardAndGreenContent.setBottomComponent(new BoardView(model, controller));
+        boardAndGreenContent.setBottomComponent(new BoardView(model, controller, horizontalFrame));
 
         //horizontalFrame.setVisible(true);
         horizontalFrame.setSize(1600, 800);
@@ -97,11 +98,7 @@ public class MainScreen extends JComponent implements Observer {
 
     @Override
     protected void paintComponent(Graphics g) {
-        if(controller.winCondition() != null){
-            System.out.println("hello there");
-            Menu menu = new Menu(model, controller);
-            horizontalFrame.dispose();
-        }
+
     }
 
     @Override

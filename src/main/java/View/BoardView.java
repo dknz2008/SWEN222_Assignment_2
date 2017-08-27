@@ -21,13 +21,15 @@ public class BoardView extends JComponent implements MouseMotionListener, MouseL
     Controller controller;
     Piece selectedPiece = null;
     Rectangle selectedPiecesBoundingBox;
+    Frame frame;
 //    BoardCell[][] grid;
 
-    protected BoardView(Model.Model m, Controller controller){
+    protected BoardView(Model.Model m, Controller controller, Frame frame){
         this.model = m;
         this.controller = controller;
+        model.addObserver(this);
         addMouseListener(this);
-
+        this.frame = frame;
     }
 
     @Override
@@ -37,6 +39,7 @@ public class BoardView extends JComponent implements MouseMotionListener, MouseL
 
     @Override
     protected void paintComponent(Graphics g) {
+
         int size = Math.min(getWidth(), getHeight()-20)/10;
 
         Graphics2D g2d = (Graphics2D) g;
@@ -105,6 +108,12 @@ public class BoardView extends JComponent implements MouseMotionListener, MouseL
 
         String s = "Current Turn: " + model.getCurrentTurn().toString() + ", Phase: " + model.getState().toString();
         g.drawString(s, getWidth()/2 - s.length(), getHeight() - 15);
+
+        if(controller.winCondition() != null){
+            Menu menu = new Menu(model, controller);
+            JOptionPane.showMessageDialog(frame, controller.winCondition().toString() + " Wins!!!!");
+            frame.dispose();
+        }
 
     }
 
