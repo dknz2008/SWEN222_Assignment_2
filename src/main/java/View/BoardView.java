@@ -24,39 +24,20 @@ public class BoardView extends JComponent implements MouseMotionListener, MouseL
 //    BoardCell[][] grid;
 
     protected BoardView(Model.Model m, Controller controller){
-
         this.model = m;
         this.controller = controller;
-
-//        this.addKeyListener(controller);
-//        this.setFocusable(true);
-
         addMouseListener(this);
-
-//        this.grid = new BoardCell[10][10];
-//
-//        Board board = model.getBoard();
-//        int size = Math.min(getWidth(),getHeight())/10;
-//
-//        for(int y = 0; y < 10; y++){
-//            for(int x = 0; x < 10; x++){
-//                Piece piece = board.getGrid()[y][x];
-//                grid[y][x]  = new BoardCell(piece,y*size, x*size, size, size);
-//            }
-//        }
 
     }
 
     @Override
     public void update(Observable o, Object arg) {
-        System.out.println("boardview repaint");
         repaint();
     }
 
     @Override
     protected void paintComponent(Graphics g) {
-
-        int size = Math.min(getWidth(),getHeight())/10;
+        int size = Math.min(getWidth(), getHeight()-20)/10;
 
         Graphics2D g2d = (Graphics2D) g;
         g2d.setStroke(new BasicStroke(2));
@@ -90,6 +71,12 @@ public class BoardView extends JComponent implements MouseMotionListener, MouseL
             for(int x = 0; x < 10; x++){
                 Piece piece = board.getGrid()[y][x];
 
+                if(controller.getMovedPieces().contains(piece)){
+                    g.setColor(java.awt.Color.BLUE);
+                    g.fillRect(x*size, y*size, size, size);
+                    g.setColor(java.awt.Color.black);
+                }
+
                 BoardCell boardCell = new BoardCell(piece,x*size, y*size, size, size);
                 boardCell.paintComponent(g);
 
@@ -108,6 +95,7 @@ public class BoardView extends JComponent implements MouseMotionListener, MouseL
                     g.fillRect((int)(x*size + 0.2*size), (y*size + size - height), width, height);
                     g.fillRect((int)(x*size), (y*size + height), height, width);
                     g.fillRect((int)(x*size + size - 0.2*size), (y*size + height), height, width);
+                    g.setColor(java.awt.Color.black);
                 }
 
 
@@ -115,10 +103,10 @@ public class BoardView extends JComponent implements MouseMotionListener, MouseL
 
         }
 
+        String s = "Current Turn: " + model.getCurrentTurn().toString() + ", Phase: " + model.getState().toString();
+        g.drawString(s, getWidth()/2 - s.length(), getHeight() - 15);
+
     }
-
-
-
 
     @Override
     public void mouseClicked(MouseEvent e) {
@@ -129,10 +117,11 @@ public class BoardView extends JComponent implements MouseMotionListener, MouseL
             if(directionClicked != null){
                 System.out.println("here0");
                 controller.pieceMovement(selectedPiece, directionClicked);
+                selectedPiece = null;
             }
         }
 
-        int size = Math.min(getWidth(), getHeight())/10;
+        int size = Math.min(getWidth(), getHeight()-20)/10;
         boolean selected = false;
 
         for(int y = 0; y < 10; y++){
@@ -197,12 +186,6 @@ public class BoardView extends JComponent implements MouseMotionListener, MouseL
             return Direction.RIGHT;
         }
 
-//        if((point.getX() > boundingBox.getX() + 0.2*size) && (point.getX() < boundingBox.getX() + width)){
-//            if((point.getY() > boundingBox.getY()) && (point.getY() < boundingBox.getY() + height)){
-//                System.out.println("UP!!!!!!");
-//                return Direction.UP;
-//            }
-//        }
         return null;
     }
 

@@ -135,6 +135,10 @@ public class Player {
         return inPlay;
     }
 
+    @Override
+    public String toString() {
+        return color.toString();
+    }
 
     /**
      * Populates list of pieces with the 24 possible pieces

@@ -30,6 +30,7 @@ public class Menu extends JComponent {
             @Override
             public void actionPerformed(ActionEvent e) {
                 MainScreen screen = new MainScreen(m, controller);
+                screen.paintComponent(getGraphics());
                 frame.dispose();
             }
         });

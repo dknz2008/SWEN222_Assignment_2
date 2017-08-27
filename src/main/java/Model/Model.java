@@ -23,6 +23,9 @@ public class Model extends Observable {
     Player yellowPlayer;
     Player greenPlayer;
 
+    public void setState(Model.GameState state) {
+        this.state = state;
+    }
 
     public Player getCurrentTurn() {
         return currentTurn;
@@ -340,10 +343,12 @@ public class Model extends Observable {
      */
     public Player hasWon(){
         if(board.attackingGreenFace(yellowPlayer) || board.attackingGreenFace(greenPlayer)){
+            state = GameState.DONE;
             return yellowPlayer;
         }
 
         if(board.attackingYellowFace(yellowPlayer) || board.attackingYellowFace(greenPlayer)){
+            state = GameState.DONE;
             return greenPlayer;
         }
         return null;
@@ -647,6 +652,7 @@ public class Model extends Observable {
         if(player == currentTurn){
             if(getCurrentTurn().isCreationTileFree(getBoard())) {
                 player.createPieceOnBoard(getBoard(), piece);
+                state = GameState.MOVEMENT;
                 //parse reactions
                 setChanged();
                 notifyObservers();
@@ -657,7 +663,6 @@ public class Model extends Observable {
     }
 
     public void pass(){
-
         if(state == GameState.CREATION){
             state = GameState.MOVEMENT;
         }else if(state == GameState.MOVEMENT){
@@ -666,10 +671,11 @@ public class Model extends Observable {
         } else if(state == GameState.DONE){
             //END GAME
         }
-
     }
 
-
+    public Model.GameState getState() {
+        return state;
+    }
 
     public static void main(String[] args) {
         Model model = new Model();

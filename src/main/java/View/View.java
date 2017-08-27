@@ -15,7 +15,6 @@ public class View extends JComponent implements Observer {
         this.model = m;
         Controller controller = new Controller(m);
         Menu menu = new Menu(m, controller);
-
     }
 
     private void createBoard(){

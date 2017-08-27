@@ -14,6 +14,7 @@ public class MainScreen extends JComponent implements Observer {
 
     Model.Model model;
     Controller controller;
+    JFrame horizontalFrame;
 
     public MainScreen(Model.Model m, Controller controller){
 
@@ -21,7 +22,7 @@ public class MainScreen extends JComponent implements Observer {
         this.controller = controller;
 
         //setting up frame for main screen
-        JFrame horizontalFrame = new JFrame("Sword and Shield Game");
+        horizontalFrame = new JFrame("Sword and Shield Game");
 
         horizontalFrame.addKeyListener(controller);
         horizontalFrame.setFocusable(true);
@@ -51,13 +52,6 @@ public class MainScreen extends JComponent implements Observer {
             horizontalFrame.dispose();
             JOptionPane.showMessageDialog(menu, "Game surrendered by: " + model.getCurrentTurn());
         });
-
-//        undoBtn.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//
-//            }
-//        });
 
         //Adding Buttons to Toolbar
         toolBar.add(undoBtn);
@@ -101,6 +95,14 @@ public class MainScreen extends JComponent implements Observer {
         super.repaint();
     }
 
+    @Override
+    protected void paintComponent(Graphics g) {
+        if(controller.winCondition() != null){
+            System.out.println("hello there");
+            Menu menu = new Menu(model, controller);
+            horizontalFrame.dispose();
+        }
+    }
 
     @Override
     public Dimension getPreferredSize() {

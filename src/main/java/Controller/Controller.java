@@ -9,19 +9,26 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 
-public class Controller implements KeyListener{
+public class Controller extends Observable implements KeyListener {
 
     Model.Model myModel;
-
-
     Piece pieceSelected;
     List<Piece> movedPieces;
+    Player playerWon;
 
+    public Player getPlayerWon() {
+        return playerWon;
+    }
 
     public Controller(Model.Model model){
         this.myModel = model;
         movedPieces = new ArrayList<>();
+    }
+
+    public List<Piece> getMovedPieces() {
+        return movedPieces;
     }
 
     public boolean addPiece(Player player, Piece piece){
@@ -30,14 +37,25 @@ public class Controller implements KeyListener{
 
     //moving piece?
     public void pieceMovement(Piece piece, Direction direction){
-//        pieceClicked(piece, boardCell);
         if(!movedPieces.contains(piece)){
             piece.move(direction.toString(), myModel.getBoard());
             movedPieces.add(piece);
+            winCondition();
+            pieceSelected = null;
+
+            setChanged();
+            notifyObservers();
         }else{
             System.out.println("Piece has already been moved in this turn");
         }
 
+    }
+
+    public Player winCondition(){
+        this.playerWon = myModel.hasWon();
+
+        //System.out.println(playerWon.toString());
+        return playerWon;
     }
 
     public void pieceClicked(Piece piece){
@@ -54,7 +72,6 @@ public class Controller implements KeyListener{
                 case 'a':
                     pieceMovement(pieceSelected, Direction.LEFT);
                     break;
-
                 case 's':
                     pieceMovement(pieceSelected, Direction.DOWN);
                     break;
