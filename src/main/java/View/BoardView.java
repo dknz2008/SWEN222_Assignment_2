@@ -1,10 +1,8 @@
 package View;
 
 import Controller.Controller;
-import Model.Board;
+import Model.*;
 import Model.Color;
-import Model.Direction;
-import Model.Piece;
 import org.w3c.dom.css.Rect;
 
 import javax.swing.*;
@@ -17,14 +15,13 @@ import java.util.Observer;
 
 public class BoardView extends JComponent implements MouseMotionListener, MouseListener, Observer {
 
-    Model.Model model;
+    Model model;
     Controller controller;
     Piece selectedPiece = null;
     Rectangle selectedPiecesBoundingBox;
     Frame frame;
-//    BoardCell[][] grid;
 
-    protected BoardView(Model.Model m, Controller controller, Frame frame){
+    protected BoardView(Model m, Controller controller, Frame frame){
         this.model = m;
         this.controller = controller;
         model.addObserver(this);
@@ -120,18 +117,31 @@ public class BoardView extends JComponent implements MouseMotionListener, MouseL
     @Override
     public void mouseClicked(MouseEvent e) {
 
-        if(selectedPiece != null){
-            System.out.println("here1");
-            Direction directionClicked = getDirectionClicked(e.getPoint(), selectedPiecesBoundingBox);
-            if(directionClicked != null){
-                System.out.println("here0");
-                controller.pieceMovement(selectedPiece, directionClicked);
+        if(model.getState() == Model.GameState.MOVEMENT){
+
+            if(selectedPiece != null){
+                System.out.println("here");
+                getBoundingBox(e);
+                Direction directionClicked = getDirectionClicked(e.getPoint(), selectedPiecesBoundingBox);
+                if(directionClicked != null){
+                    controller.pieceMovement(selectedPiece, directionClicked);
+                    selectedPiece = null;
+                }
+            }
+
+            if(!getBoundingBox(e)){
                 selectedPiece = null;
             }
-        }
 
+            System.out.println("x: " + e.getPoint().getX());
+            System.out.println("y: " + e.getPoint().getY());
+            repaint();
+        }
+    }
+
+
+    public boolean getBoundingBox(MouseEvent e){
         int size = Math.min(getWidth(), getHeight()-20)/10;
-        boolean selected = false;
 
         for(int y = 0; y < 10; y++){
             for(int x = 0; x < 10; x++){
@@ -139,26 +149,20 @@ public class BoardView extends JComponent implements MouseMotionListener, MouseL
                 if(e.getX() > rect.getX() && e.getX() < rect.getX() + rect.getWidth()){
                     if(e.getY() > rect.getY() && e.getY() < rect.getY() + rect.getHeight()){
                         selectedPiece = model.getBoard().getGrid()[y][x];
-                        controller.pieceClicked(selectedPiece);
-                        selectedPiecesBoundingBox = rect;
-                        selected = true;
-                        System.out.println("hey!");
+                        if(selectedPiece != null){
+                            System.out.println("here");
+                            if(selectedPiece.getColor() == model.getCurrentTurn().getColor()){
+                                System.out.println("ofc");
+                                controller.pieceClicked(selectedPiece);
+                                selectedPiecesBoundingBox = rect;
+                                return true;
+                            }
+                        }
                     }
                 }
             }
         }
-
-
-        if(!selected){
-            selectedPiece = null;
-        }
-
-        //Direction d = getDirectionClicked(e.getPoint(), );
-
-        System.out.println("x: " + e.getPoint().getX());
-        System.out.println("y: " + e.getPoint().getY());
-        //System.out.println(d);
-        repaint();
+        return false;
     }
 
     public Direction getDirectionClicked(Point point, Rectangle boundingBox){

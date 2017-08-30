@@ -33,6 +33,10 @@ public class SavedGameState {
         model.movedPieces = savedMovedPieces;
     }
 
+    public Board getSavedBoard() {
+        return savedBoard;
+    }
+
     public boolean isWasCreation() {
         return wasCreation;
     }

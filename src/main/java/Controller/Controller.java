@@ -15,7 +15,6 @@ public class Controller extends Observable implements KeyListener {
 
     Model.Model myModel;
     Piece pieceSelected;
-    List<Piece> movedPieces;
     Player playerWon;
 
     public Player getPlayerWon() {
@@ -24,11 +23,10 @@ public class Controller extends Observable implements KeyListener {
 
     public Controller(Model.Model model){
         this.myModel = model;
-        movedPieces = new ArrayList<>();
     }
 
     public List<Piece> getMovedPieces() {
-        return movedPieces;
+        return myModel.movedPieces;
     }
 
     public boolean addPiece(Player player, Piece piece){
@@ -37,23 +35,14 @@ public class Controller extends Observable implements KeyListener {
 
     //moving piece?
     public void pieceMovement(Piece piece, Direction direction){
-        if(!movedPieces.contains(piece)){
-            piece.move(direction.toString(), myModel.getBoard());
-            movedPieces.add(piece);
-            winCondition();
-            pieceSelected = null;
+        myModel.movePiece(piece, direction);
 
-            setChanged();
-            notifyObservers();
-        }else{
-            System.out.println("Piece has already been moved in this turn");
-        }
-
+        winCondition();
+        pieceSelected = null;
     }
 
     public Player winCondition(){
         this.playerWon = myModel.hasWon();
-
         //System.out.println(playerWon.toString());
         return playerWon;
     }

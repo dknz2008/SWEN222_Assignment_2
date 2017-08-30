@@ -14,6 +14,7 @@ public class Player {
     Color color;
     int creationTileX;
     int creationTileY;
+    public boolean pieceCreated = false;
 
     public Player(int creationTileX, int creationTileY, Color color) {
         this.creationTileX = creationTileX;

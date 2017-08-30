@@ -46,7 +46,7 @@ public class MainScreen extends JComponent implements Observer {
         JButton surrenderBtn = new JButton("Surrender");
 
 
-        undoBtn.addActionListener((e) -> System.out.println("test"));
+        undoBtn.addActionListener((e) -> model.Undo());
         passBtn.addActionListener((e) -> {model.pass();});
         surrenderBtn.addActionListener((e) -> {
             Menu menu = new Menu(model, controller);

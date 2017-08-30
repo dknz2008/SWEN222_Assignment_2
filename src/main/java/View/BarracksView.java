@@ -1,10 +1,7 @@
 package View;
 
 import Controller.Controller;
-import Model.Board;
-import Model.Direction;
-import Model.Piece;
-import Model.Player;
+import Model.*;
 import com.rits.cloning.Cloner;
 
 import javax.swing.*;
@@ -17,19 +14,18 @@ import java.util.Observer;
 
 public class BarracksView extends JComponent implements MouseMotionListener, MouseListener, Observer {
 
-    Model.Model model;
+    Model model;
     Player player;
     Controller controller;
     Piece selectedPiece;
 
-    protected BarracksView(Model.Model m, Player player, Controller controller){
+    protected BarracksView(Model m, Player player, Controller controller){
         this.model = m;
         this.player = player;
         this.controller = controller;
         model.addObserver(this);
         addMouseListener(this);
     }
-
 
     @Override
     public void update(Observable o, Object arg) {
@@ -88,57 +84,61 @@ public class BarracksView extends JComponent implements MouseMotionListener, Mou
     @Override
     public void mouseClicked(MouseEvent e) {
 
-        boolean set = false;
-        int size = Math.min(getWidth()/3, getHeight()/8);
-        int count = 0;
+        if(model.getState() == Model.GameState.CREATION){
 
-        //if piece is currently not selected
-        if(selectedPiece == null &&  player == model.getCurrentTurn() && model.getCurrentTurn().isCreationTileFree(model.getBoard())) {
-            for (int y = 0; y < 8; y++) {
-                for (int x = 0; x < 3; x++) {
-                    Rectangle rect = new Rectangle(x * size, y * size, size, size);
+            boolean set = false;
+            int size = Math.min(getWidth()/3, getHeight()/8);
+            int count = 0;
+
+            //if piece is currently not selected
+            if(selectedPiece == null &&  player == model.getCurrentTurn() && model.getCurrentTurn().isCreationTileFree(model.getBoard())) {
+                for (int y = 0; y < 8; y++) {
+                    for (int x = 0; x < 3; x++) {
+                        Rectangle rect = new Rectangle(x * size, y * size, size, size);
+                        if (e.getX() > rect.getX() && e.getX() < rect.getX() + rect.getWidth()) {
+                            if (e.getY() > rect.getY() && e.getY() < rect.getY() + rect.getHeight()) {
+
+                                Piece piece;
+                                if (count >= player.getBarracks().size()) {
+                                    piece = null;
+                                } else {
+                                    piece = player.getBarracks().get(count);
+                                }
+
+                                selectedPiece = piece;
+                                set = true;
+                            }
+                        }
+                        count++;
+                    }
+                }
+            }else{
+                for (int x = 0; x < 4; x++) {
+                    size = Math.min(getWidth() / 3, getHeight() / 8);
+                    Rectangle rect = new Rectangle(x * size, 0, size, size);
+                    //TODO refactor this part
                     if (e.getX() > rect.getX() && e.getX() < rect.getX() + rect.getWidth()) {
                         if (e.getY() > rect.getY() && e.getY() < rect.getY() + rect.getHeight()) {
-
-                            Piece piece;
-                            if (count >= player.getBarracks().size()) {
-                                piece = null;
-                            } else {
-                                piece = player.getBarracks().get(count);
-                            }
-
-                            selectedPiece = piece;
-                            set = true;
+                            Piece[] orientations =  model.getOrientations(selectedPiece);
+                            controller.addPiece(player, orientations[0].rotate(x*90));
+                            set = false;
                         }
                     }
-                    count++;
                 }
             }
-        }else{
-            for (int x = 0; x < 4; x++) {
-                size = Math.min(getWidth() / 3, getHeight() / 8);
-                Rectangle rect = new Rectangle(x * size, 0, size, size);
-                //TODO refactor this part
-                if (e.getX() > rect.getX() && e.getX() < rect.getX() + rect.getWidth()) {
-                    if (e.getY() > rect.getY() && e.getY() < rect.getY() + rect.getHeight()) {
-                        Piece[] orientations =  model.getOrientations(selectedPiece);
-                        controller.addPiece(player, orientations[0].rotate(x*90));
-                        set = false;
-                    }
-                }
+
+            if (!set) {
+                selectedPiece = null;
             }
+
+            repaint();
+            //Direction d = getDirectionClicked(e.getPoint(), );
+
+            System.out.println("x: " + e.getPoint().getX());
+            System.out.println("y: " + e.getPoint().getY());
         }
 
-        if (!set) {
-            selectedPiece = null;
-        }
 
-        repaint();
-        //Direction d = getDirectionClicked(e.getPoint(), );
-
-        System.out.println("x: " + e.getPoint().getX());
-        System.out.println("y: " + e.getPoint().getY());
-        //System.out.println(d);
     }
 
 

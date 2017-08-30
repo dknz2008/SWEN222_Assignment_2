@@ -44,7 +44,7 @@ public class Model extends Observable {
     }
 
     private Stack<SavedGameState> savedGameStates;
-    List<Piece> movedPieces;
+    public List<Piece> movedPieces;
 
     public Model() {
         savedGameStates = new Stack<>();
@@ -650,10 +650,11 @@ public class Model extends Observable {
 
     public boolean addPiece(Player player, Piece piece){
         if(player == currentTurn){
-            if(getCurrentTurn().isCreationTileFree(getBoard())) {
+            if(getCurrentTurn().isCreationTileFree(getBoard()) && !currentTurn.pieceCreated) {
+                Clone(true,false);
                 player.createPieceOnBoard(getBoard(), piece);
                 state = GameState.MOVEMENT;
-                //parse reactions
+                currentTurn.pieceCreated = true;
                 setChanged();
                 notifyObservers();
                 return true;
@@ -664,18 +665,39 @@ public class Model extends Observable {
 
     public void pass(){
         if(state == GameState.CREATION){
+            Clone(false, true);
             state = GameState.MOVEMENT;
         }else if(state == GameState.MOVEMENT){
+            Clone(false, true);
             currentTurn = getOpponent(currentTurn);
+            movedPieces = new ArrayList<>();
             state = GameState.CREATION;
+            currentTurn.pieceCreated = false;
         } else if(state == GameState.DONE){
             //END GAME
+        }
+
+        setChanged();
+        notifyObservers();
+    }
+
+    public void movePiece(Piece piece, Direction direction){
+        if(!movedPieces.contains(piece)){
+            Clone(false, false);
+            piece.move(direction.toString(), getBoard());
+            movedPieces.add(piece);
+            setChanged();
+            notifyObservers();
+        }else{
+            System.out.println("Piece has already been moved in this turn");
         }
     }
 
     public Model.GameState getState() {
         return state;
     }
+
+
 
     public static void main(String[] args) {
         Model model = new Model();
@@ -687,7 +709,7 @@ public class Model extends Observable {
      * @param isCreation if player is in creation state
      * @param isPass if player has passed or not
      */
-    private void Clone(boolean isCreation, boolean isPass){
+    public void Clone(boolean isCreation, boolean isPass){
         Cloner cloner = new Cloner();
         Board boardclone = cloner.deepClone(board);
         Player yellowPlayerClone = cloner.deepClone(yellowPlayer);
@@ -700,19 +722,22 @@ public class Model extends Observable {
     /**
      * undoes move (assuming >= 1 move has been made thus far)
      */
-    private void Undo(){
+    public void Undo(){
         if(savedGameStates.size() >= 1){
             SavedGameState savedGame = savedGameStates.pop();
             savedGame.UndoGame(this);
 
             System.out.println("Undid move");
-            drawGrid(board.getGrid());
+            //drawGrid(board.getGrid());
             if (savedGame.isWasCreation()) {
                 state = GameState.CREATION;
             }
             if (savedGame.isWasPass()) {
                 state = GameState.MOVEMENT;
             }
+
+            setChanged();
+            notifyObservers();
         }else{
             System.out.println("There is nothing to undo currently");
         }
