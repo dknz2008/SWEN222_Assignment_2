@@ -116,7 +116,6 @@ public class BarracksView extends JComponent implements MouseMotionListener, Mou
                 for (int x = 0; x < 4; x++) {
                     size = Math.min(getWidth() / 3, getHeight() / 8);
                     Rectangle rect = new Rectangle(x * size, 0, size, size);
-                    //TODO refactor this part
                     if (e.getX() > rect.getX() && e.getX() < rect.getX() + rect.getWidth()) {
                         if (e.getY() > rect.getY() && e.getY() < rect.getY() + rect.getHeight()) {
                             Piece[] orientations =  model.getOrientations(selectedPiece);
@@ -136,6 +135,8 @@ public class BarracksView extends JComponent implements MouseMotionListener, Mou
 
             System.out.println("x: " + e.getPoint().getX());
             System.out.println("y: " + e.getPoint().getY());
+        }else{
+            selectedPiece = null;
         }
 
 

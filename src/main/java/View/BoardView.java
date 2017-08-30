@@ -135,6 +135,7 @@ public class BoardView extends JComponent implements MouseMotionListener, MouseL
 
             System.out.println("x: " + e.getPoint().getX());
             System.out.println("y: " + e.getPoint().getY());
+            System.out.println(selectedPiece == null);
             repaint();
         }
     }
@@ -146,22 +147,23 @@ public class BoardView extends JComponent implements MouseMotionListener, MouseL
         for(int y = 0; y < 10; y++){
             for(int x = 0; x < 10; x++){
                 Rectangle rect = new Rectangle(y*size, x*size, size, size);
-                if(e.getX() > rect.getX() && e.getX() < rect.getX() + rect.getWidth()){
-                    if(e.getY() > rect.getY() && e.getY() < rect.getY() + rect.getHeight()){
-                        selectedPiece = model.getBoard().getGrid()[y][x];
-                        if(selectedPiece != null){
-                            System.out.println("here");
-                            if(selectedPiece.getColor() == model.getCurrentTurn().getColor()){
-                                System.out.println("ofc");
-                                controller.pieceClicked(selectedPiece);
-                                selectedPiecesBoundingBox = rect;
-                                return true;
-                            }
+                if(rect.contains(e.getPoint())){
+                    selectedPiece = model.getBoard().getGrid()[y][x];
+                    if(selectedPiece != null){
+                        System.out.println("__here");
+                        if(selectedPiece.getColor() == model.getCurrentTurn().getColor()){
+                            System.out.println("ofc");
+                            controller.pieceClicked(selectedPiece);
+                            selectedPiecesBoundingBox = rect;
+                            return true;
                         }
+                    }else{
+                        System.out.println("its null what???");
                     }
                 }
             }
         }
+
         return false;
     }
 
